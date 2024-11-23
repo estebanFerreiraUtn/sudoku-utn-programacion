@@ -28,9 +28,9 @@ def crear_tablero(cantidad_filas: int, cantidad_columnas: int, valor_inicial: an
 
     tablero = []
 
-    for _ in range(filas):
-        fila = [valor_inicial] * columnas
-        tablero += [fila]
+    for _ in range(cantidad_filas):
+        fila = [valor_inicial] * cantidad_columnas
+        tablero.append(fila)
     return tablero
 
 def validar_numero_en_tablero(tablero:list, fila:int, columna:int, numero:int, subcuadrado_largo:int) -> bool:
@@ -86,7 +86,7 @@ def llenar_tablero(tablero_vacio: list, subcuadrado_largo: int) -> bool:
     for i in range(len(tablero_vacio)):
         for j in range(len(tablero_vacio[i])):
             if tablero_vacio[i][j] == 0: 
-                numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9]  
+                numeros = list(range(1, len(tablero_vacio) + 1))  
                 random.shuffle(numeros) 
 
                 for numero in numeros: 
@@ -152,10 +152,10 @@ def ocultar_numeros(tablero:list, valor_oculto:any, dificultad: str) -> None:
                 break
 
 # Sudoku 9x9
-filas = 9
-columnas = 9
+filas = 3
+columnas = 3
 valor_inicial = 0
-subcuadrado_largo = 3  
+subcuadrado_largo = 3
 
 
 tablero_sudoku = crear_tablero(filas, columnas, valor_inicial)
@@ -173,6 +173,10 @@ print("\nOcultando numeros del tablero sudoku...")
 ocultar_numeros(tablero_sudoku, 0, "intermedio")
 
 print("\nTablero sudoku: \n")
+mostrar_tablero(tablero_sudoku, subcuadrado_largo)
+
+print("\nTablero sudoku...\n")
+llenar_tablero(tablero_sudoku, subcuadrado_largo)
 mostrar_tablero(tablero_sudoku, subcuadrado_largo)
 
 
