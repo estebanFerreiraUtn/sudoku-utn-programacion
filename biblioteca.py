@@ -48,30 +48,40 @@ def validar_numero_en_tablero(tablero:list, fila:int, columna:int, numero:int, s
         bool: Si el numero es correcto sera True y en caso contrario False.
     '''
 
-    # Verifica si el numero se encuentra en la misma fila
-    if numero in tablero[fila]:
-        return False
+    validacion = True
 
-    # Verifica si el numero se encuentra en la misma columna
-    for i in range(len(tablero)):
-        if tablero[i][columna] == numero:
-            return False
+    for _ in range(1):
+        # Verifica si el numero se encuentra en la misma fila
+        if numero in tablero[fila]:
+            validacion = False
+            break
 
-    # Verifica si el numero se encuentra en el mismo subcuadro
-    subcuadro_fila = (fila // subcuadrado_largo) * subcuadrado_largo
-    subcuadro_col = (columna // subcuadrado_largo) * subcuadrado_largo
+        # Verifica si el numero se encuentra en la misma columna
+        for i in range(len(tablero)):
+            if tablero[i][columna] == numero:
+                validacion = False
+                break
 
-    for i in range(subcuadro_fila, subcuadro_fila + subcuadrado_largo):
-        for j in range(subcuadro_col, subcuadro_col + subcuadrado_largo):
-            if tablero[i][j] == numero:
-                return False
+        if validacion == False:
+            break
 
-    # Si se valido todo correctamente se retorna verdadero
-    return True
+        # Verifica si el numero se encuentra en el mismo subcuadro
+        subcuadro_fila = (fila // subcuadrado_largo) * subcuadrado_largo
+        subcuadro_col = (columna // subcuadrado_largo) * subcuadrado_largo
+
+        for i in range(subcuadro_fila, subcuadro_fila + subcuadrado_largo):
+            for j in range(subcuadro_col, subcuadro_col + subcuadrado_largo):
+                if tablero[i][j] == numero:
+                    validacion = False
+                    break
+            if validacion == False:
+                break
+
+    return validacion
 
 def llenar_tablero(tablero_vacio: list, subcuadrado_largo: int) -> bool:
     '''
-    Genera tableros con numeros aleatorios respetando las reglas del Sudoku.
+    llena tableros con numeros aleatorios respetando las reglas del Sudoku.
 
     Args:
         tablero_vacio (list): Tablero creado para insertarle los numeros validos. 
@@ -83,23 +93,30 @@ def llenar_tablero(tablero_vacio: list, subcuadrado_largo: int) -> bool:
     Example:
         >>> llenar_tablero(tablero, 3)
     '''
+    validacion = True  
+
     for i in range(len(tablero_vacio)):
         for j in range(len(tablero_vacio[i])):
-            if tablero_vacio[i][j] == 0: 
-                numeros = list(range(1, len(tablero_vacio) + 1))  
-                random.shuffle(numeros) 
-
-                for numero in numeros: 
-                    if validar_numero_en_tablero(tablero_vacio, i, j, numero, subcuadrado_largo) == True:                        
-                        tablero_vacio[i][j] = numero  
-
-                        # Recursividad
-                        if llenar_tablero(tablero_vacio, subcuadrado_largo) == True: 
-                            return True
+            if tablero_vacio[i][j] == 0:
+                numeros = list(range(1, len(tablero_vacio) + 1))
+                random.shuffle(numeros)
+                
+                for numero in numeros:
+                    if validar_numero_en_tablero(tablero_vacio, i, j, numero, subcuadrado_largo) == True:
+                        tablero_vacio[i][j] = numero
                         
-                        tablero_vacio[i][j] = 0  
-                return False  
-    return True  
+                        if llenar_tablero(tablero_vacio, subcuadrado_largo) == True:
+                            validacion = True
+                            break
+                        
+                        tablero_vacio[i][j] = 0
+                    else:
+                        validacion = False
+                break
+        if validacion == False:
+            break
+
+    return validacion
 
 def mostrar_tablero(tablero: list, subcuadrado_largo: int) -> None:
     '''
@@ -148,14 +165,14 @@ def ocultar_numeros(tablero:list, valor_oculto:any, dificultad: str) -> None:
             columna_aleatoria = random.randint(0, len(tablero[0]) - 1)
 
             if tablero[fila_aleatoria][columna_aleatoria] != 0:
-                tablero[fila_aleatoria][columna_aleatoria] = 0
+                tablero[fila_aleatoria][columna_aleatoria] = valor_oculto
                 break
 
 # Sudoku 9x9
-filas = 3
-columnas = 3
+filas = 16
+columnas = 16
 valor_inicial = 0
-subcuadrado_largo = 3
+subcuadrado_largo = 4
 
 
 tablero_sudoku = crear_tablero(filas, columnas, valor_inicial)
