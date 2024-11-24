@@ -18,4 +18,5 @@ GRIS = (200, 200, 200)
 #Imagenes
 FONDO_MENU_PRINCIPAL = "imagenes/menu_principal.png"
 LETRA_MENU_PRINCIPAL = "imagenes/fuente.ttf"
+CAPTION = "imagenes/sudoku-caption.webp"
 
