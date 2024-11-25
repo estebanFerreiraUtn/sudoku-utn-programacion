@@ -2,9 +2,9 @@ import pygame, constantes as const
 
 pygame.init()
 
-def correr_juego(dimension_ventana:tuple)->None:
+def correr_juego(dimension_ventana:tuple) -> None:
     """
-    Corre el juego
+    Muestra la ventana del menu principal del juego.
     """
 
     pantalla = pygame.display.set_mode(dimension_ventana)
@@ -55,11 +55,7 @@ def correr_juego(dimension_ventana:tuple)->None:
             #Si recibe parámetros, actualiza solo esa parte. Sin parámetros actualiza todo
         pygame.display.flip() #actualiza todo
     
-def pantalla_juego():
-    #pantalla.fill(const.NEGRO)
-    pass
-
-def menu_opciones():
+def mostrar_opciones():
     #pantalla.fill(const.GRIS)
     pass
     

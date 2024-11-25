@@ -1,4 +1,4 @@
-import random, os
+import constantes as const, os, random
 os.system("cls")
 
 def crear_tablero(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
@@ -12,22 +12,8 @@ def crear_tablero(cantidad_filas: int, cantidad_columnas: int, valor_inicial: an
     
     Returns:
         list: Tablero creado con las dimensiones especificadas 
-
-    Example:
-        >>> crear_tablero(9, 9, 0)
-        [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
     '''
-
     tablero = []
-
     for _ in range(cantidad_filas):
         fila = [valor_inicial] * cantidad_columnas
         tablero.append(fila)
@@ -118,33 +104,6 @@ def llenar_tablero(tablero_vacio: list, subcuadrado_largo: int) -> bool:
 
     return validacion
 
-def mostrar_tablero(tablero: list, subcuadrado_largo: int) -> None:
-    '''
-    Muestra la simulacion de un tablero sudoku por consola.
-
-    Args:
-        tablero (list): tablero(matriz) ya generada para mostrar por consola de forma de tablero sudoku.
-        subcuadrado_largo (int): Largo de los subcuadrados para mostrar dinamicamente por consola respetando las dimensiones del tablero.
-    
-    Returns:
-        None: No retorna nada.
-
-    Example:
-        >>> mostrar_tablero(tablero, 3)
-    '''
-    for i in range(len(tablero)):
-        # Separadores de filas cada subcuadrado
-        if i % subcuadrado_largo == 0 and i != 0:
-            print("---" * (len(tablero) + subcuadrado_largo - 2))
-
-        for j in range(len(tablero[i])):
-            # Separadores de columnas cada subcuadrado
-            if j % subcuadrado_largo == 0 and j != 0:
-                print("|", end=" ")
-
-            print(f"{tablero[i][j]:2} ", end="")
-        print()
-
 def ocultar_numeros(tablero:list, valor_oculto:any, dificultad: str) -> None:
     '''
     Funcion que oculta numeros del tablero de posiciones aleatorias dependiendo la dificultad
@@ -167,33 +126,3 @@ def ocultar_numeros(tablero:list, valor_oculto:any, dificultad: str) -> None:
             if tablero[fila_aleatoria][columna_aleatoria] != 0:
                 tablero[fila_aleatoria][columna_aleatoria] = valor_oculto
                 break
-
-# Sudoku 9x9
-filas = 16
-columnas = 16
-valor_inicial = 0
-subcuadrado_largo = 4
-
-
-tablero_sudoku = crear_tablero(filas, columnas, valor_inicial)
-
-print("Tablero vacio:\n")
-mostrar_tablero(tablero_sudoku, subcuadrado_largo)
-
-print("\nGenerando Sudoku dinamico...\n")
-llenar_tablero(tablero_sudoku, subcuadrado_largo)
-
-print("Sudoku completado:\n")
-mostrar_tablero(tablero_sudoku, subcuadrado_largo)
-
-print("\nOcultando numeros del tablero sudoku...")
-ocultar_numeros(tablero_sudoku, 0, "intermedio")
-
-print("\nTablero sudoku: \n")
-mostrar_tablero(tablero_sudoku, subcuadrado_largo)
-
-print("\nTablero sudoku...\n")
-llenar_tablero(tablero_sudoku, subcuadrado_largo)
-mostrar_tablero(tablero_sudoku, subcuadrado_largo)
-
-
