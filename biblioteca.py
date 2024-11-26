@@ -126,3 +126,60 @@ def ocultar_numeros(tablero:list, valor_oculto:any, dificultad: str) -> None:
             if tablero[fila_aleatoria][columna_aleatoria] != 0:
                 tablero[fila_aleatoria][columna_aleatoria] = valor_oculto
                 break
+
+# Funciones para calcular el puntaje de un jugador:
+
+def determinar_coeficiente_segun_dificultad(dificultad:str)->int:
+    """
+    Esta función se encarga de asignar un coeficiente para el puntaje del jugador de acuerdo al nivel de dificultad del juego.
+    Recibe:
+        dificultad(str): es un string que representa al nivel de dificultad del juego.
+    Retorna:
+        coeficiente_segun_dificultad (int): es un número entero que representa a un coeficiente con el que se multiplicará el puntaje del jugador teniendo en cuenta la dificultad elegida para el sudoku (1 para fácil, 1,5 para intermedio, 2 para díficil).
+    """
+    match dificultad:
+        case "facil":
+            coeficiente_segun_dificultad = 1
+        case "intermedio":
+            coeficiente_segun_dificultad = 1.5
+        case "dificil":
+            coeficiente_segun_dificultad = 2
+    
+    return coeficiente_segun_dificultad
+
+def calcular_puntaje(minutos_transcurridos:int, cantidad_errores:int,  dificultad_sudoku:str="facil", puntaje_base:int=1000, penalizacion_por_error:int=50, penalizacion_por_minuto:int=10)->int:
+    """
+    Esta función se encarga de calcular el puntaje de un jugador al terminar la partida del sudoku.
+    Recibe:
+        minutos_transcurridos (int): es un número entero que representa la cantidad de minutos transcurridos desde que se inicio el juego.
+        cantidad_errores (int): es un número entero que representa la cantidad de errores cometidos por el jugador.
+        puntaje_base (int): es un número entero que representa el puntaje que tiene el jugador al iniciar el juego.
+        penalizacion_por_error (int): es un número entero que representa el puntaje que se resta al jugador por cada error cometido.
+        penalizacion_por_minuto (int): es un número entero que representa el puntaje que se resta al jugador por cada minuto transcurrido luego de haber iniciado el juego.
+        dificultad(str): es un string que representa al nivel de dificultad del juego.
+    Retorna:
+        resultado (int): es un número entero que representa el puntaje final del jugador al terminar el juego.
+    """
+    resultado = (puntaje_base - (cantidad_errores * penalizacion_por_error) - (minutos_transcurridos * penalizacion_por_minuto)) * determinar_coeficiente_segun_dificultad(dificultad_sudoku)
+
+    return resultado
+
+# Función para determinar qué porcentaje del tablero del sudoku debe ser ocultado:
+
+def asignar_porcentaje_casilleros_ocultos(dificultad:str="facil")->float:
+    """
+    Esta función se encarga de asignar un porcentaje de casilleros a ocultar en un tablero de sudoku de acuerdo al nivel de dificultad del juego.
+    Recibe:
+        dificultad(str): es un string que representa al nivel de dificultad del juego.
+    Retorna:
+
+    """
+    match dificultad:
+        case "facil":
+            porcentaje_casilleros_ocultos = 0.20
+        case "intermedio":
+            porcentaje_casilleros_ocultos = 0.60
+        case "dificil":
+            porcentaje_casilleros_ocultos = 0.40
+
+    return porcentaje_casilleros_ocultos
