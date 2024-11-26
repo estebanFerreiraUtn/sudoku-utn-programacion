@@ -1,62 +1,92 @@
-import pygame, constantes as const
+import pygame, constantes as const 
+from funciones import menu_principal
 
-pygame.init()
-
-def correr_juego(dimension_ventana:tuple) -> None:
+def correr_juego(dimension_ventana:tuple)->None:
     """
-    Muestra la ventana del menu principal del juego.
+    Corre el juego
+    Recibe: dimension_ventana (tuple) con el tamaño de la ventana principal
     """
-
+    pygame.init()
+    pygame.mixer.init()
+    caption = pygame.image.load(const.CAPTION)
+    pygame.display.set_icon(caption)
     pantalla = pygame.display.set_mode(dimension_ventana)
 
     juego_corriendo = True
+    pantalla_menu = True
+    pantalla_jugar = False
+    pantalla_puntajes = False
+    pantalla_actual = ""
+
     while juego_corriendo == True:
-        pygame.display.set_caption(const.TITULO_MENU)
-        caption = pygame.image.load(const.CAPTION)
-        pygame.display.set_icon(caption)
-        fondo_menu_principal = pygame.image.load(const.FONDO_MENU_PRINCIPAL)
-        pantalla.blit(fondo_menu_principal, (0, 0))
-        
-        texto_menu = pygame.font.Font(const.LETRA_MENU_PRINCIPAL, (30)).render("MENU PRINCIPAL", True, "#0000b3")
-        rectangulo_menu = texto_menu.get_rect(center=(400, 70))
-        borde_rectangulo_menu = pygame.Rect.copy(rectangulo_menu)
-        borde_rectangulo_menu = pygame.Rect.inflate(borde_rectangulo_menu, 20, 20)
-        borde_rectangulo_menu = pygame.draw.rect(pantalla, "#0000b3", borde_rectangulo_menu, 4)
-        
-        texto_boton_jugar = pygame.font.Font(const.LETRA_MENU_PRINCIPAL, (30)).render("JUGAR", True, "#0000b3", "#fef5e7")
-        rectangulo_boton_jugar = texto_boton_jugar.get_rect(center=(400, 200))
-        borde_boton_jugar = pygame.Rect.copy(rectangulo_boton_jugar)
-        borde_boton_jugar = pygame.Rect.inflate(rectangulo_boton_jugar, 15, 15)
-        borde_boton_jugar = pygame.draw.rect(pantalla, "#0000b3", borde_boton_jugar, 3)
-        
-        texto_boton_puntajes = pygame.font.Font(const.LETRA_MENU_PRINCIPAL, (30)).render("PUNTAJES", True, "#0000b3", "#fef5e7")
-        rectangulo_boton_puntajes = texto_boton_puntajes.get_rect(center=(400, 300))
-        borde_boton_puntajes = pygame.Rect.copy(rectangulo_boton_puntajes)
-        borde_boton_puntajes = pygame.Rect.inflate(rectangulo_boton_puntajes, 15, 15)
-        borde_boton_puntajes = pygame.draw.rect(pantalla, "#0000b3", borde_boton_puntajes, 3)
-
-        texto_boton_salir = pygame.font.Font(const.LETRA_MENU_PRINCIPAL, (30)).render("SALIR", True, "#0000b3", "#fef5e7")
-        rectangulo_boton_salir = texto_boton_salir.get_rect(center=(400, 400))
-        borde_boton_salir = pygame.Rect.copy(rectangulo_boton_salir)
-        borde_boton_salir = pygame.Rect.inflate(rectangulo_boton_salir, 15, 15)
-        borde_boton_salir = pygame.draw.rect(pantalla, "#0000b3", borde_boton_salir, 3)
-
-        pantalla.blit(texto_menu, rectangulo_menu)
-        pantalla.blit(texto_boton_jugar, rectangulo_boton_jugar)
-        pantalla.blit(texto_boton_puntajes, rectangulo_boton_puntajes)
-        pantalla.blit(texto_boton_salir, rectangulo_boton_salir)
         posicion_mouse = pygame.mouse.get_pos()
-        #print(posicion_mouse)
         lista_eventos = pygame.event.get()
+        boton_mouse_presionado = pygame.mouse.get_pressed()
+
+        if pantalla_menu == True:
+            pantalla.fill(const.NEGRO)
+            menu_principal.iniciar_musica(const.MUSICA_MENU_PRINCIPAL)
+            pygame.display.set_caption(const.TITULO_MENU)
+            menu_principal.dibujar_fondo(pantalla, const.FONDO_MENU_PRINCIPAL)
+            titulo = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "MENU PRINCIPAL", const.AZUL_MENU, 400, 80, 20, 20, 4)
+            boton_jugar = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "JUGAR", const.AZUL_MENU, 400, 200, 15, 15, 3, const.AZUL_CLARO)
+            boton_puntajes = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "PUNTAJES", const.AZUL_MENU, 400, 300, 15, 15, 3, const.AZUL_CLARO)
+            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 400, 400, 15, 15, 3, const.AZUL_CLARO)
+            pantalla_menu = False
+            pantalla_actual = "menu"
+        
+        if pantalla_jugar == True:
+            pantalla.fill(const.GRIS_CLARO)
+            menu_principal.iniciar_musica(const.MUSICA_JUGAR)
+            pygame.display.set_caption(const.TITULO_JUGAR)
+            menu_principal.dibujar_fondo(pantalla, const.FONDO_JUGAR)
+            
+            boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.AZUL_MENU, 690, 450, 15, 15, 3, const.AZUL_CLARO)
+            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 700, 550, 15, 15, 3, const.AZUL_CLARO)
+            
+            pantalla_jugar = False
+            pantalla_actual = "jugar"
+        
+        if pantalla_puntajes == True:
+            pantalla.fill(const.GRIS_CLARO)
+            menu_principal.iniciar_musica(const.MUSICA_PUNTAJE)
+            pygame.display.set_caption(const.TITULO_PUNTAJE)
+            menu_principal.dibujar_fondo(pantalla, const.FONDO_PUNTAJES)
+
+            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 600, 550, 15, 15, 3, const.AZUL_CLARO)
+            boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.AZUL_MENU, 200, 550, 15, 15, 3, const.AZUL_CLARO)
+            
+            pantalla_puntajes = False
+            pantalla_actual = "puntajes"
+        
         for evento in lista_eventos:
+            if evento.type == pygame.MOUSEBUTTONDOWN and boton_mouse_presionado[0] == True:
+                if boton_salir.collidepoint(posicion_mouse):
+                    juego_corriendo = False
+                
+                if boton_jugar.collidepoint(posicion_mouse):
+                    pantalla_menu = False
+                    pantalla_jugar = True
+                
+                if boton_puntajes.collidepoint(posicion_mouse):
+                    pantalla_menu = False
+                    pantalla_puntajes = True
+                
+                if pantalla_actual == "jugar":
+                    if boton_volver.collidepoint(posicion_mouse):
+                        pantalla_menu = True
+                        pantalla_jugar = False
+                
+                if pantalla_actual == "puntajes":
+                    if boton_volver.collidepoint(posicion_mouse):
+                        pantalla_menu = True
+                        pantalla_puntajes = False
+                
+            
             if evento.type == pygame.QUIT:
                 juego_corriendo = False
             
-            #Si recibe parámetros, actualiza solo esa parte. Sin parámetros actualiza todo
-        pygame.display.flip() #actualiza todo
-    
-def mostrar_opciones():
-    #pantalla.fill(const.GRIS)
-    pass
-    
+            
+        pygame.display.flip()
+
 correr_juego(const.DIMENSION_VENTANA)
