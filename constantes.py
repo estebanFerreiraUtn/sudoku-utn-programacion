@@ -12,7 +12,7 @@ TITULO_MENU = "Sudoku Clásico - Menú"
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 AZUL = (0, 122, 255)
-GRIS_CLARO = (200, 200, 200)
+GRIS_CLARO = (100, 100, 100)
 AZUL_CLARO = (173, 216, 230)
 
 ### IMAGENES ###
