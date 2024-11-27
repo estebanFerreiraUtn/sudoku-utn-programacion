@@ -20,7 +20,7 @@ CREMA = (254, 245, 231)
 ### IMAGENES ###
 FONDO_MENU_PRINCIPAL = "imagenes/menu_principal.png"
 FONDO_JUGAR = "imagenes/fondo_jugar.png"
-FONDO_PUNTAJES = "imagenes/fondo_puntuaciones.png"
+FONDO_PUNTAJES = "imagenes/fondo_seccion_puntuaciones.jpg"
 LETRA = "imagenes/fuente.ttf"
 CAPTION = "imagenes/sudoku-caption.webp"
 
