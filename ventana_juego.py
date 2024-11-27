@@ -130,7 +130,7 @@ def ocultar_numeros(tablero:list, valor_de_ocultar:any, dificultad: str) -> None
                 tablero[fila_aleatoria][columna_aleatoria] = valor_de_ocultar
                 break
 
-def generar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio_x:int, inicio_y:int, ventana:pygame.Surface, tamaño_numeros:int, color_numeros:tuple) -> None:
+def generar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio_x:int, inicio_y:int, ventana:pygame.Surface, tamano_numeros:int, color_numeros:tuple, color_tablero:tuple) -> list:
     '''
     Dibuja un tablero sudoku clasico.
 
@@ -143,6 +143,7 @@ def generar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
         ventana (pygame.Surface): Ventana en la cual se va a dibujar el tablero.
         tamaño_numeros (int): Tamaño que van a tener los numeros en el tablero.
         color_numeros (tuple): Color que van a tener los numeros en el tablero.
+        color_tablero (tuple): Color que va a tener las lineas del tablero.
         
     Returns:
         none: 
@@ -152,22 +153,15 @@ def generar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
 
     for i in range(len(matriz_sudoku)):
         for j in range(len(matriz_sudoku[i])):
-            if (i + j) % 2 == 0:
-                color = const.NEGRO
-            else:
-                color = const.AZUL
-
             # Posiciones donde se van a dibujar las celdas
             x_celda = ancho_celda * j + inicio_x
             y_celda = alto_celda * i + inicio_y
 
             # Dibujamos los rectangulos
             celda = pygame.Rect(x_celda, y_celda, ancho_celda, alto_celda)
-            dibujo = pygame.draw.rect(ventana, color, celda)
+            dibujo = pygame.draw.rect(ventana, color_tablero, celda, 1)
 
             matriz_rectangulos[i][j] = dibujo
-
-            matriz_rectangulos
 
     ### DIBUJO DE NUMEROS ###
     for i in range(len(matriz_sudoku)):
@@ -183,26 +177,23 @@ def generar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
             y_numero = (alto_celda * i) + (alto_celda - alto_texto) / 2 + inicio_y
 
             ventana.blit(numero, (x_numero, y_numero))
+    
+    return matriz_rectangulos
 
-def dibujar_opciones(ventana:pygame.Surface, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y:int, lista_numeros:list, color_numeros:tuple):
+def dibujar_opciones(ventana:pygame.Surface, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y:int, lista_numeros:list, color_numeros:tuple, color_tabla:tuple):
     '''
     Funcion que dibujas los rectangulos de opciones de numeros para agregar a la tabla del sudoku.
     '''
     ### DIBUJO DE LOS RECTANGULOS DE OPCIONES DE NUMERO ### 
     for i in range(3):
-        for j in range(3): 
-            if (i + j) % 2 == 0:
-                color = const.NEGRO
-            else:
-                color = const.AZUL
-            
+        for j in range(3):             
             # Posiciones donde se van a dibujar las celdas
             x_celda = ancho_celda * j + inicio_x
             y_celda = alto_celda * i + inicio_y
 
             # Dibujamos los rectangulos
             celda = pygame.Rect(x_celda, y_celda, ancho_celda, alto_celda)
-            dibujo = pygame.draw.rect(ventana, color, celda)
+            dibujo = pygame.draw.rect(ventana, color_tabla, celda, 1)
 
     ### DIBUJO DE NUMEROS ###
     contador_opciones = 0
@@ -223,6 +214,21 @@ def dibujar_opciones(ventana:pygame.Surface, ancho_celda:int, alto_celda:int, in
 
             contador_opciones += 1
 
+def obtener_celda_seleccionada(matriz_rectangulos:list, cordenadas:tuple) -> tuple|None:
+    '''
+    Obtiene la celda seleccionada adentro del tablero.
+    '''
+    verificacion = None
+    for i in range(len(matriz_rectangulos)):
+        for j in range(len(matriz_rectangulos[i])):
+            # Valida si se interactuo sobre una celda (rectangulo)
+            if matriz_rectangulos[i][j].collidepoint(cordenadas):
+                verificacion =  (i, j)
+                break
+        if verificacion != None:
+            break
+    
+    return verificacion
         
 ### EJECUCION DE LA VENTANA ###
 pygame.init()
@@ -242,7 +248,7 @@ inicio_y_tablero = 70
 ancho_celda_opciones = 80
 alto_celda_opciones = 50
 inicio_x_opciones = 500
-inicio_y_opciones = 370
+inicio_y_opciones = 70
 tamano_numero = 25
 
 ### Creamos la matriz para despues dibujarla ###
@@ -252,24 +258,46 @@ matriz_copia = matriz[:]
 ocultar_numeros(matriz_copia, "", "intermedio")
 
 corriendo = True
+celda_seleccionada = None
 while corriendo:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            corriendo = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Obtenemos las cordenadas x,y del evento click
-            eje_x, eje_y = event.pos
-            # Mostramos x,y 
-            print(f"X: {eje_x}, Y: {eje_y}")
-
     # Fondo de la ventana
     ventana_sudoku.fill(const.BLANCO)
 
     # Dibujamos el tablero en la ventana
-    generar_tablero(matriz, ancho_celda_tablero, alto_celda_tablero, inicio_x_tablero, inicio_y_tablero, ventana_sudoku, tamano_numero, const.BLANCO)
+    matriz_rectangulos = generar_tablero(matriz, ancho_celda_tablero, alto_celda_tablero, inicio_x_tablero, inicio_y_tablero, ventana_sudoku, tamano_numero, const.NEGRO, const.NEGRO)
     # Dibujamos la tabla de opciones numericas
-    dibujar_opciones(ventana_sudoku, ancho_celda_opciones, alto_celda_opciones, inicio_x_opciones, inicio_y_opciones, lista_numeros, const.BLANCO)
+    dibujar_opciones(ventana_sudoku, ancho_celda_opciones, alto_celda_opciones, inicio_x_opciones, inicio_y_opciones, lista_numeros, const.NEGRO, const.NEGRO)
 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            corriendo = False
+
+        ## EVENTOS DE CLICK ###
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Obtenemos las cordenadas x,y del evento click
+            eje_x, eje_y = event.pos
+
+            # Verifica si se dio click adentro del tablero
+            celda_seleccionada = obtener_celda_seleccionada(matriz_rectangulos, (eje_x, eje_y))
+            if celda_seleccionada != None:
+                print(f"Celda seleccionada: {celda_seleccionada}")
+            
+        ## EVENTOS DE TECLA ###
+        if event.type == pygame.KEYDOWN and celda_seleccionada:
+            # Obtenemos el valor ingresado por teclado
+            numero = event.unicode
+            # Validamos si el valor ingresado es numerico y si esta vacia la celda
+            if numero.isdigit() and (matriz[celda_seleccionada[0]][celda_seleccionada[1]] == ""):
+                # Validamos que el numero ingresado sea valido en la celda seleccionada
+                if validar_numero_en_tablero(matriz, *celda_seleccionada, int(numero)):
+                    # Ingresamos el numero en la tabla (matriz) del juego
+                    matriz[celda_seleccionada[0]][celda_seleccionada[1]] = int(numero)
+                else:
+                    print("Numero ingresado invalido")
+                # Limpia la celda para reutilizarla
+                celda_seleccionada = None  
+
+    
     # Actualiza la ventana
     pygame.display.flip()
 
