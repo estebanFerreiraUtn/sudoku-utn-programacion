@@ -1,5 +1,6 @@
 import pygame, constantes as const 
 from funciones import menu_principal
+from puntajes import *
 
 def correr_juego(dimension_ventana:tuple)->None:
     """
@@ -55,7 +56,8 @@ def correr_juego(dimension_ventana:tuple)->None:
 
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 600, 550, 15, 15, 3, const.AZUL_CLARO)
             boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.AZUL_MENU, 200, 550, 15, 15, 3, const.AZUL_CLARO)
-            
+            mostrar_puntajes(lista_jugadores, pantalla)
+
             pantalla_puntajes = False
             pantalla_actual = "puntajes"
         

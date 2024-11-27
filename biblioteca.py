@@ -183,3 +183,55 @@ def asignar_porcentaje_casilleros_ocultos(dificultad:str="facil")->float:
             porcentaje_casilleros_ocultos = 0.40
 
     return porcentaje_casilleros_ocultos
+
+######## TIMER EN PYGAME (Hay que ver cómo integrarlo en el juego)
+# import pygame
+
+# # Inicializar pygame
+# pygame.init()
+
+# # Definir dimensiones de la ventana
+# ANCHO = 800
+# ALTO = 600
+# pantalla = pygame.display.set_mode((ANCHO, ALTO))
+# pygame.display.set_caption("Cronómetro en Pygame")
+
+# # Definir fuente para el cronómetro usando SysFont
+# fuente = pygame.font.SysFont('Arial', 40)
+
+# # Definir el reloj para controlar los FPS
+# reloj = pygame.time.Clock()
+
+# # Variable para controlar el tiempo
+# inicio_tiempo = pygame.time.get_ticks()
+
+# # Bucle principal del juego
+# ejecutando = True
+# while ejecutando:
+#     # Manejo de eventos
+#     for evento in pygame.event.get():
+#         if evento.type == pygame.QUIT:
+#             ejecutando = False
+
+#     # Calcular el tiempo transcurrido
+#     tiempo_transcurrido = pygame.time.get_ticks() - inicio_tiempo  # en milisegundos
+#     minutos = tiempo_transcurrido // 60000  # Convertir milisegundos a minutos
+#     segundos = (tiempo_transcurrido // 1000) % 60  # Convertir milisegundos a segundos
+
+#     # Crear el texto para mostrar el cronómetro
+#     texto_cronometro = fuente.render(f"{minutos:02}:{segundos:02}", True, (0, 0, 0))  # Texto en negro
+
+#     # Limpiar la pantalla con fondo blanco
+#     pantalla.fill((255, 255, 255))  # Rellenar toda la pantalla de blanco
+
+#     # Dibujar el cronómetro en la esquina superior derecha de la pantalla
+#     pantalla.blit(texto_cronometro, (ANCHO - 190 - texto_cronometro.get_width(), 450))
+
+#     # Actualizar la pantalla
+#     pygame.display.flip()
+
+#     # Controlar los FPS
+#     reloj.tick(60)
+
+# # Salir de pygame
+# pygame.quit()
