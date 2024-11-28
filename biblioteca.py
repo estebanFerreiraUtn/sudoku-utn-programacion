@@ -1,4 +1,6 @@
+import pygame
 import constantes as const, os, random
+import json
 os.system("cls")
 
 def crear_tablero(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
@@ -184,54 +186,66 @@ def asignar_porcentaje_casilleros_ocultos(dificultad:str="facil")->float:
 
     return porcentaje_casilleros_ocultos
 
-######## TIMER EN PYGAME (Hay que ver cómo integrarlo en el juego)
-# import pygame
 
-# # Inicializar pygame
-# pygame.init()
 
-# # Definir dimensiones de la ventana
-# ANCHO = 800
-# ALTO = 600
-# pantalla = pygame.display.set_mode((ANCHO, ALTO))
-# pygame.display.set_caption("Cronómetro en Pygame")
 
-# # Definir fuente para el cronómetro usando SysFont
-# fuente = pygame.font.SysFont('Arial', 40)
+# Función para validar el ingreso de un nombre en el sudoku:
 
-# # Definir el reloj para controlar los FPS
-# reloj = pygame.time.Clock()
+def validar_nombre_ingresado(nombre_jugador:str)-> bool:
+    """
+    Esta función se encarga de validar el nombre de un usuario viendo que tenga entre 3 y 15 caracteres y que sea alfanúmerico.
+    Recibe:
+        nombre_ingresado (str): es un string que representa el nombre del usuario a validar.
+    Devuelve:
+        retorno_validación (bool): es un booleano que tiene el valor True si el nombre del usuario es válido, False en caso contrario.
+    """
+    retorno_validacion = False
+    if len(nombre_jugador) > 2 and len(nombre_jugador) < 15 and nombre_jugador.isalnum():
+        retorno_validacion = True
+    return retorno_validacion
 
-# # Variable para controlar el tiempo
-# inicio_tiempo = pygame.time.get_ticks()
+# Funciones utiles para manejar el archivo json para los puntajes:
 
-# # Bucle principal del juego
-# ejecutando = True
-# while ejecutando:
-#     # Manejo de eventos
-#     for evento in pygame.event.get():
-#         if evento.type == pygame.QUIT:
-#             ejecutando = False
+def guardar_archivo_json(lista:list[dict], ruta:str)->None:
+    """
+    Esta función se encarga de escribirle una lista de diccionario a un archivo json. Si el archivo json no existe lo crea.
+    Recibe:
+        lista (list[dict]): es una lista de diccionarios que representa a la lista con los datos a guardarse en el archivo json.
+        ruta (str): representa a la dirección en la que se encuentra el archivo json al cual se le escribirá la lista.
+    No retorna nada.
+    """
+    with open(ruta, "w") as mi_archivo:
+        json.dump(lista, mi_archivo, indent = 4)
 
-#     # Calcular el tiempo transcurrido
-#     tiempo_transcurrido = pygame.time.get_ticks() - inicio_tiempo  # en milisegundos
-#     minutos = tiempo_transcurrido // 60000  # Convertir milisegundos a minutos
-#     segundos = (tiempo_transcurrido // 1000) % 60  # Convertir milisegundos a segundos
 
-#     # Crear el texto para mostrar el cronómetro
-#     texto_cronometro = fuente.render(f"{minutos:02}:{segundos:02}", True, (0, 0, 0))  # Texto en negro
+# Importar datos del archivo json al programa
 
-#     # Limpiar la pantalla con fondo blanco
-#     pantalla.fill((255, 255, 255))  # Rellenar toda la pantalla de blanco
+def cargar_archivo_json(ruta:str)-> list[dict]:
+    """
+    Esta función se encarga leer un archivo json y retornar su contenido.
+    Recibe:
+        ruta (str): representa a la dirección en la que se encuentra el archivo json a ser leido.
+    Retorna:
+        datos(list[dict]): son los datos que del archivo en forma de una lista de diccionarios.
+    """
+    with open(ruta, "r") as mi_archivo:
+        datos = json.load(mi_archivo)
+    
+    return datos
 
-#     # Dibujar el cronómetro en la esquina superior derecha de la pantalla
-#     pantalla.blit(texto_cronometro, (ANCHO - 190 - texto_cronometro.get_width(), 450))
+def agregar_jugador_a_lista(nombre_jugador:str,puntaje:float,lista_jugadores:list[dict])->list[dict]:
+    """
+    Esta función se encarga de agregar un nuevo jugador (son su id, su nombre y puntaje) a la lista de personas que ya jugaron al juego.
+    Recibe:
+        nombre_jugador (str): es un string que representa al nombre del jugador.
+        puntaje (float): es un entero que representa al nombre del jugador
+        lista_jugadores(list[dict]): es una lista de diccionarios que representa a la lista de jugadores qye ya han jugado al juego.
+    Devuelve:
+        lista_jugadores (list[dict]): es la lista de jugadores con el último jugador que jugo el juego ya cargado a la misma.
+    """
+    id = len(lista_jugadores)
+    nuevo_jugador = {"id": id, "nombre": nombre_jugador, "puntaje": puntaje}
+    lista_jugadores.append(nuevo_jugador)
 
-#     # Actualizar la pantalla
-#     pygame.display.flip()
+    return lista_jugadores
 
-#     # Controlar los FPS
-#     reloj.tick(60)
-
-# # Salir de pygame
-# pygame.quit()

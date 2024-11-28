@@ -7,6 +7,7 @@ DIMENSION_VENTANA = (ANCHO_VENTANA, ALTO_VENTANA)
 TITULO_JUGAR = "Sudoku Clásico - Jugar"
 TITULO_PUNTAJE = "Sudoku Clásico - Puntajes"
 TITULO_MENU = "Sudoku Clásico - Menú"
+TITULO_CONFIGURACIONES = "Sudoku Clásico - Configuraciones" # Para el nuevo menu de configuraciones
 
 ### COLORES ###
 BLANCO = (255, 255, 255)
@@ -21,6 +22,7 @@ CREMA = (254, 245, 231)
 FONDO_MENU_PRINCIPAL = "imagenes/menu_principal.png"
 FONDO_JUGAR = "imagenes/fondo_jugar.png"
 FONDO_PUNTAJES = "imagenes/fondo_seccion_puntuaciones.jpg"
+FONDO_CONFIGURACIONES = "imagenes/fondo_configuraciones.jpeg" # Fondo para el nuevo menu configuraciones
 LETRA = "imagenes/fuente.ttf"
 CAPTION = "imagenes/sudoku-caption.webp"
 
