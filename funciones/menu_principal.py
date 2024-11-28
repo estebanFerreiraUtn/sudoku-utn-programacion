@@ -1,11 +1,11 @@
 import pygame
 
-def dibujar_boton(pantalla: pygame.Surface, tipografia: str, tamanio_letra: int, texto_boton: str, color_principal: tuple, eje_x: int, eje_y: int, incremento_x: int, incremento_y: int, grosor_borde: int, color_fondo: tuple|None = None)->None:
+def dibujar_boton(pantalla: pygame.Surface, tipografia: str|None, tamanio_letra: int, texto_boton: str, color_principal: tuple, eje_x: int, eje_y: int, incremento_x: int, incremento_y: int, grosor_borde: int, color_fondo: tuple|None = None)->None:
     """
     Dibuja un botón en pantalla
     Recibe:
         pantalla (pygame:Surface) en la que se dibujará el botón
-        tipografia (str) del texto
+        tipografia (str|None) con la ubicación o None para el default de Pygame
         tamanio_letra (int) a imprimir
         texto_boton (str) descriptivo de la función del botón
         color_principal (tuple) del texto y borde en RGB
@@ -37,7 +37,7 @@ def dibujar_boton(pantalla: pygame.Surface, tipografia: str, tamanio_letra: int,
 
     return borde
 
-def iniciar_musica(ubicacion_archivo: str, volumen_inicial: float = 0.1):
+def iniciar_musica(ubicacion_archivo: str, volumen_inicial: float = 0.1)->None:
     """
     Inicia la música de una pantalla
         Recibe: ubicacion_archivo(str) de música
@@ -47,11 +47,13 @@ def iniciar_musica(ubicacion_archivo: str, volumen_inicial: float = 0.1):
     pygame.mixer.music.set_volume(volumen_inicial)
     pygame.mixer.music.play(-1)
 
-def dibujar_fondo(pantalla: pygame.Surface, ubicacion_imagen: str):
+def dibujar_fondo(pantalla: pygame.Surface, ubicacion_imagen: str, eje_x: int, eje_y: int)->None:
     """
     Dibuja el fondo de pantalla
-        Recibe: pantalla (pygame.Surface) en la cual dibujar
-        ubicacion_imagen (str) a dibujar
+    Recibe: pantalla (pygame.Surface) en la cual dibujar
+            ubicacion_imagen (str) a dibujar
+            eje_x (int) ubicación del fondo en el eje x de la pantalla
+            eje_y (int) ubicación del fondo en el eje y de la pantalla
     """
     fondo = pygame.image.load(ubicacion_imagen)
-    pantalla.blit(fondo, (0, 0))
+    pantalla.blit(fondo, (eje_x, eje_y))
