@@ -17,6 +17,9 @@ AZUL_MENU = (0, 0, 179)
 GRIS_CLARO = (100, 100, 100)
 AZUL_CLARO = (173, 216, 230)
 CREMA = (254, 245, 231)
+COLOR_CELDA_ERRONEA = (255, 0, 0) # Rojo  (RGBA)
+COLOR_CELDA_SELECCIONADA = (173, 216, 230, 128)   # Azul transparente (RGBA)
+
 
 ### IMAGENES ###
 FONDO_MENU_PRINCIPAL = "imagenes/menu_principal.png"
@@ -26,7 +29,27 @@ FONDO_CONFIGURACIONES = "imagenes/fondo_configuraciones.jpeg" # Fondo para el nu
 LETRA = "imagenes/fuente.ttf"
 CAPTION = "imagenes/sudoku-caption.webp"
 
+### TABLERO ###
+ANCHO_CELDA_TABLERO = 50
+ALTO_CELDA_TABLERO = 50
+INICIO_X_TABLERO = 10
+INICIO_Y_TABLERO = 70
+GROSOR_LINEA = 1
+GROSOR_LINEA_GRUESA = 4
+GROSOR_NUMEROS = 25
+
+### TABLA OPCIONES ###
+### VARIABLES TABLA OPCIONES NUMERICAS ###
+ANCHO_CELDA_OPCIONES = 80
+ALTO_CELDA_OPCIONES = 50
+INICIO_Y_OPCIONES = 500
+INICIO_Y_OPCIONES = 70
+GROSOR_LINEAS_OPCIONES = 2
+
+NUMEROS_SUDOKU = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 ### MUSICA ###
 MUSICA_MENU_PRINCIPAL = "sonidos/menu_principal.mp3"
 MUSICA_JUGAR = "sonidos/juego.mp3"
 MUSICA_PUNTAJE = "sonidos/puntajes.mp3"
+
