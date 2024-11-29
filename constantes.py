@@ -28,6 +28,7 @@ FONDO_PUNTAJES = "imagenes/fondo_seccion_puntuaciones.jpg"
 FONDO_CONFIGURACIONES = "imagenes/fondo_configuraciones.jpeg" # Fondo para el nuevo menu configuraciones
 LETRA = "imagenes/fuente.ttf"
 CAPTION = "imagenes/sudoku-caption.webp"
+FONDO_SUDOKU = "imagenes/fondo-sudoku.jpg"
 
 ### TABLERO ###
 ANCHO_CELDA_TABLERO = 50
