@@ -17,6 +17,7 @@ def correr_juego(dimension_ventana:tuple)->None:
     tiempo_milisegundos = 1000
     pygame.time.set_timer(evento_ticks_1, tiempo_milisegundos)
     tiempo_transcurrido = 0
+    errores = 0
 
     juego_corriendo = True
     pantalla_menu = True
@@ -52,9 +53,9 @@ def correr_juego(dimension_ventana:tuple)->None:
             pygame.display.set_caption(const.TITULO_JUGAR)
             menu_principal.dibujar_fondo(pantalla, const.FONDO_JUGAR, 0, 0)
             
-            boton_reiniciar_partida = menu_principal.dibujar_boton(pantalla, const.LETRA, 15, "REINICIAR PARTIDA", const.AZUL_MENU, 650, 350, 15, 15, 3, const.GRIS_CLARO) # Nuevo botón para reiniciar el la partida
-            boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.AZUL_MENU, 690, 450, 15, 15, 3, const.AZUL_CLARO)
-            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 700, 550, 15, 15, 3, const.AZUL_CLARO)
+            boton_reiniciar_partida = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "REINICIAR", const.NEGRO, 660, 450, 15, 15, 3, const.CREMA) # Nuevo botón para reiniciar el la partida
+            boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "VOLVER", const.NEGRO, 690, 500, 15, 15, 3, const.CREMA)
+            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "SALIR", const.NEGRO, 700, 550, 15, 15, 3, const.CREMA)
 
             pantalla_jugar = False
             pantalla_actual = "jugar"
@@ -97,10 +98,10 @@ def correr_juego(dimension_ventana:tuple)->None:
                     tiempo_transcurrido += 1000
                     minutos = tiempo_transcurrido // 60000  # Convertir milisegundos a minutos
                     segundos = (tiempo_transcurrido // 1000) % 60  # Convertir milisegundos a segundos
-                    texto_cronometro = pygame.font.Font(None, 30).render(f"{minutos:02}:{segundos:02}", True, (0, 0, 0))  # Texto en negro
-                    cuadrado_texto_cronometro = texto_cronometro.get_rect(topleft=(600,50))
-                    pantalla.fill((255, 255 ,255), cuadrado_texto_cronometro)
-                    pantalla.blit(texto_cronometro, (600, 50))
+                    cronometro = menu_principal.dibujar_boton(pantalla, None, 30, f"{minutos:02}:{segundos:02}", const.NEGRO, 730, 50, 15, 15, 3, const.CREMA)
+                    
+                    puntaje_actual = menu_principal.calcular_puntaje(minutos, errores, dificultad)
+                    puntaje = menu_principal.dibujar_boton(pantalla, None, 30, f"Puntaje {puntaje_actual}", const.NEGRO, 620, 50, 15, 15, 3, const.CREMA)
 
             if evento.type == pygame.MOUSEBUTTONDOWN and boton_mouse_presionado[0] == True:
                 if boton_salir.collidepoint(posicion_mouse):
