@@ -48,3 +48,8 @@ GROSOR_LINEAS_OPCIONES = 2
 
 NUMEROS_SUDOKU = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+### MUSICA ###
+MUSICA_MENU_PRINCIPAL = "sonidos/menu_principal.mp3"
+MUSICA_JUGAR = "sonidos/juego.mp3"
+MUSICA_PUNTAJE = "sonidos/puntajes.mp3"
+
