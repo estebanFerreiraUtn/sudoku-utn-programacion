@@ -21,6 +21,7 @@ def correr_juego(dimension_ventana:tuple)->None:
 
     juego_corriendo = True
     pantalla_menu = True
+    sonido_ejecutandose = True
     pantalla_jugar = False
     pantalla_puntajes = False
     pantalla_configuraciones = False # Nuevo menu para elegir dificultad del juego
@@ -52,8 +53,8 @@ def correr_juego(dimension_ventana:tuple)->None:
             menu_principal.iniciar_musica(const.MUSICA_JUGAR)
             pygame.display.set_caption(const.TITULO_JUGAR)
             menu_principal.dibujar_fondo(pantalla, const.FONDO_JUGAR, 0, 0)
-            
-            boton_reiniciar_partida = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "REINICIAR", const.NEGRO, 660, 450, 15, 15, 3, const.CREMA) # Nuevo botón para reiniciar el la partida
+            boton_sonido = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "SONIDO ON/OFF", const.NEGRO, 620, 400, 15, 15, 3, const.CREMA)
+            boton_reiniciar = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "REINICIAR", const.NEGRO, 660, 450, 15, 15, 3, const.CREMA) # Nuevo botón para reiniciar el la partida
             boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "VOLVER", const.NEGRO, 690, 500, 15, 15, 3, const.CREMA)
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "SALIR", const.NEGRO, 700, 550, 15, 15, 3, const.CREMA)
 
@@ -75,7 +76,6 @@ def correr_juego(dimension_ventana:tuple)->None:
         
         if pantalla_configuraciones == True: # Nuevo menu configuraciones
             pantalla.fill(const.GRIS_CLARO)
-            # Faltaría música
             pygame.display.set_caption(const.TITULO_CONFIGURACIONES)
             menu_principal.dibujar_fondo(pantalla, const.FONDO_CONFIGURACIONES, 0, 0) # Cambiar fondo
             titulo_configuraciones = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "CONFIGURACIONES", const.AZUL_MENU, 400, 80, 20, 20, 4)
@@ -98,10 +98,12 @@ def correr_juego(dimension_ventana:tuple)->None:
                     tiempo_transcurrido += 1000
                     minutos = tiempo_transcurrido // 60000  # Convertir milisegundos a minutos
                     segundos = (tiempo_transcurrido // 1000) % 60  # Convertir milisegundos a segundos
-                    cronometro = menu_principal.dibujar_boton(pantalla, None, 30, f"{minutos:02}:{segundos:02}", const.NEGRO, 730, 50, 15, 15, 3, const.CREMA)
+                    recuadro_cronometro = menu_principal.dibujar_boton(pantalla, None, 30, f"Tiempo: {minutos:02}:{segundos:02}", const.NEGRO, 705, 50, 15, 15, 3, const.CREMA)
                     
                     puntaje_actual = menu_principal.calcular_puntaje(minutos, errores, dificultad)
-                    puntaje = menu_principal.dibujar_boton(pantalla, None, 30, f"Puntaje {puntaje_actual}", const.NEGRO, 620, 50, 15, 15, 3, const.CREMA)
+                    recuadro_puntaje = menu_principal.dibujar_boton(pantalla, None, 30, f"Puntaje: {puntaje_actual:4}", const.NEGRO, 550, 50, 15, 15, 3, const.CREMA)
+
+                    recuadro_errores = menu_principal.dibujar_boton(pantalla, None, 30, f"Errores: {errores}", const.NEGRO, 620, 90, 15, 15, 3, const.CREMA)
 
             if evento.type == pygame.MOUSEBUTTONDOWN and boton_mouse_presionado[0] == True:
                 if boton_salir.collidepoint(posicion_mouse):
@@ -119,12 +121,21 @@ def correr_juego(dimension_ventana:tuple)->None:
                         pantalla_configuraciones = True
                 
                 if pantalla_actual == "jugar":
-                    if boton_reiniciar_partida.collidepoint(posicion_mouse):
+                    if boton_reiniciar.collidepoint(posicion_mouse):
                         pantalla_jugar = True
                         tiempo_transcurrido = 0
+                        errores = 0
                     
                     if boton_volver.collidepoint(posicion_mouse):
                         pantalla_menu = True
+                    
+                    if boton_sonido.collidepoint(posicion_mouse):
+                        if sonido_ejecutandose == True:
+                            pygame.mixer.music.stop()
+                            sonido_ejecutandose = False
+                        else:
+                            pygame.mixer.music.play(-1)
+                            sonido_ejecutandose = True
                 
                 if pantalla_actual == "puntajes":
                     if boton_volver.collidepoint(posicion_mouse):
