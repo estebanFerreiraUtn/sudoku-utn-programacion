@@ -36,15 +36,16 @@ def correr_juego(dimension_ventana:tuple)->None:
     celda_inv = None
 
     lista_celdas_invalidas = []
+    lista_celdas_validas = []
 
     matriz = crear_matriz(9, 9, 0)
     llenar_matriz(matriz, const.NUMEROS_SUDOKU)
     matriz_copia = copy.deepcopy(matriz)
     ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
 
-    mostrar_matriz(matriz)
-    print()
-    mostrar_matriz(matriz_copia)
+    # mostrar_matriz(matriz)
+    # print()
+    # mostrar_matriz(matriz_copia)
     
     while juego_corriendo == True:
         # Obtenemos los eventos utilizados
@@ -133,7 +134,7 @@ def correr_juego(dimension_ventana:tuple)->None:
                 
                 # Dibujamos el tablero y los numeros del sudoku
                 matriz_rectangulos = dibujar_tablero(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, pantalla, const.NEGRO, const.GROSOR_LINEA_GRUESA, celda_selec, celda_inv)
-                dibujar_numeros(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, const.NEGRO, pantalla, const.GROSOR_NUMEROS, celda_inv, lista_celdas_invalidas)
+                dibujar_numeros(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, const.NEGRO, pantalla, const.GROSOR_NUMEROS, lista_celdas_invalidas, lista_celdas_validas)
                 
                 # Hacemos la formula para que nos de el tiempo en minutos y segundos
                 minutos = tiempo_transcurrido // 60000  
@@ -158,7 +159,6 @@ def correr_juego(dimension_ventana:tuple)->None:
                 # Valida si se selcciono una celda adentro del tablero. si se selecciona se pinta y si se toca afuera del tablero se despinta
                 if nueva_celda != None:
                     celda_selec = nueva_celda  
-                    celda_inv = None  
                 else:
                     celda_selec = None  
                 
@@ -177,11 +177,12 @@ def correr_juego(dimension_ventana:tuple)->None:
                     if numero == matriz[celda_selec[0]][celda_selec[1]]:
                         # Ingresamos el numero en el tablero (matriz copia) del juego
                         matriz_copia[fila][columna] = numero 
-                        celda_inv = None
+                        lista_celdas_validas.append(celda_selec)
                         print("Celda correcta")
                     else:
                         # Agregamos a una variable la celda invalida para luego usarla y poder pintar el numero de rojo
-                        celda_inv = celda_selec
+                        # celda_inv = celda_selec
+                        lista_celdas_invalidas.append(celda_selec)
                         matriz_copia[fila][columna] = numero
                         contador_errores += 1
                         print(contador_errores)
@@ -194,15 +195,17 @@ def correr_juego(dimension_ventana:tuple)->None:
                             ocultar_numeros_en_matriz(matriz_copia, "", "intermedio")
                             matriz_copia[fila][columna] = ""
                             contador_errores = 0
+                            lista_celdas_invalidas.clear()
+                            celda_selec = None
 
                         lista_celdas_invalidas.append(celda_inv)
 
                 if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE) and pantalla_actual == "jugar":
                     # Borra las celdas invalidas si se presiono la tecla de borrar o la de suprimir
-                    if celda_selec: 
-                        if celda_inv or matriz_copia[fila][columna] != matriz[fila][columna]:
+                    if celda_selec != None: 
+                        if (celda_selec in lista_celdas_invalidas) or (matriz_copia[fila][columna] != matriz[fila][columna]):
                             matriz_copia[fila][columna] = "" 
-                            celda_inv = None
+                            lista_celdas_invalidas.remove(celda_selec)
 
             if evento.type == pygame.MOUSEBUTTONDOWN and boton_mouse_presionado[0] == True:
                 if boton_salir.collidepoint(posicion_mouse):
@@ -224,11 +227,17 @@ def correr_juego(dimension_ventana:tuple)->None:
                     if boton_reiniciar.collidepoint(posicion_mouse):
                         pantalla_jugar = True
                         tiempo_transcurrido = 0
+
+                        # Reincia el contador de errores y genera una nueva matriz para el tablero de juego
                         contador_errores = 0
                         matriz = crear_matriz(9, 9, 0)
                         llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                         matriz_copia = copy.deepcopy(matriz)
                         ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
+                        lista_celdas_invalidas.clear()
+                        lista_celdas_validas.clear()
+                        celda_selec = None
+
                     
                     if boton_volver.collidepoint(posicion_mouse):
                         pantalla_menu = True
@@ -263,10 +272,15 @@ def correr_juego(dimension_ventana:tuple)->None:
                         dificultad = "dificil"
                         print(dificultad) # Solo para verificar
 
-                    matriz = crear_matriz(9, 9, 0)
-                    llenar_matriz(matriz, const.NUMEROS_SUDOKU)
-                    matriz_copia = copy.deepcopy(matriz)
-                    ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
+                    # Reinicia la matriz para un nuevo tablero cuando se modifique la dificultad
+                    if boton_dificultad_facil.collidepoint(posicion_mouse) or boton_dificultad_intermedio.collidepoint(posicion_mouse) or boton_dificultad_dificil.collidepoint(posicion_mouse):
+                        matriz = crear_matriz(9, 9, 0)
+                        llenar_matriz(matriz, const.NUMEROS_SUDOKU)
+                        matriz_copia = copy.deepcopy(matriz)
+                        ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
+                        celda_selec = None
+                        lista_celdas_validas.clear()
+                        lista_celdas_invalidas.clear()
 
             if evento.type == pygame.QUIT:
                 juego_corriendo = False
