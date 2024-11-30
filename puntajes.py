@@ -73,24 +73,21 @@ def mostrar_puntajes(jugadores:list, ventana:pygame.Surface):
     # Dibujar el fondo
     # ventana.blit(fondo, (0, 0))
     
-    # Inicializar el contador para las posiciones
-    posicion_y = 50  # Comienza en 50 píxeles en el eje Y
-
-    # Mostrar los datos de los jugadores
+    # Mostramos los datos de los jugadores
     cabecera = "Top 10 mejores puntajes sudoku"
     cabecera_renderizada = fuente.render(cabecera, True, AZUL)
     ventana.blit(cabecera_renderizada, (170, 50))
 
-    # Inicializar el contador para las posiciones
-    posicion_y = 90  # Comienza en 90 píxeles en el eje Y
+    # Donde va a empezar la posicion x, y
+    posicion_x = 50 
+    posicion_y = 90  
 
-    
     for i in range(len(jugadores)):
         texto = f"{i + 1} _ {jugadores[i]['nombre']}: {jugadores[i]['puntaje']}"
-        texto_renderizado = fuente.render(texto, True, AZUL)  # Color azul
-        ventana.blit(texto_renderizado, (250, posicion_y))  # Dibujar el texto en la posición (50, posicion_y)
+        texto_renderizado = fuente.render(texto, True, AZUL) 
+        ventana.blit(texto_renderizado, (250, posicion_y))  # Dibuja el texto en la posicion (50, posicion_y)
         
-        # Actualizar la posición en el eje Y para el siguiente jugador
-        posicion_y += 40  # Aumentar la posición Y en 40 píxeles
+        # Actualiza la posicion en el eje Y para el siguiente jugador
+        posicion_y += 40  # Aumenta la posicion en 40 píxeles
 
 

@@ -182,15 +182,15 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
     
     return matriz_rectangulos
 
-def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, celda_invalida:tuple):
+def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, celda_invalida:tuple, lista_celdas_invalidas:tuple):
     '''
     Dibuja los numeros en las cordenas dichas
     '''
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             fuente = pygame.font.Font(None, grosor_numero)
-            
-            if celda_invalida == (i, j):
+
+            if (i, j) in lista_celdas_invalidas or celda_invalida == (i, j):
                 color_actual = const.COLOR_CELDA_ERRONEA
             else:
                 color_actual = color_numeros
