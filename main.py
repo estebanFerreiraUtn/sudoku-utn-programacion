@@ -45,8 +45,8 @@ def correr_juego(dimension_ventana:tuple)->None:
     matriz_copia = copy.deepcopy(matriz)
     ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
 
-    mostrar_matriz(matriz) #BORRAR!!!
-    #mostrar_matriz(matriz_copia) #BORRAR!!!
+    mostrar_matriz(matriz)
+    mostrar_matriz(matriz_copia)
     
     while juego_corriendo == True:
         # Obtenemos los eventos utilizados
@@ -133,7 +133,6 @@ def correr_juego(dimension_ventana:tuple)->None:
             
             if evento.type == pygame.KEYDOWN and pantalla_actual == "ganador":
                 if evento.key == pygame.K_BACKSPACE and (len(ingreso_teclas) > 0):
-                    #rectangulo_boton_texto = boton_texto.get
                     ingreso_teclas = ingreso_teclas[0:-1]
                 elif evento.key == pygame.K_RETURN:  # Enter
                     lista_jugadores = cargar_archivo_json(const.ARCHIVO_JUGADORES)

@@ -1,4 +1,3 @@
-# FORMA DE IMPRIMIR LOS PUNTAJES EN PANTALLA:
 import pygame
 from constantes import *
 import json
@@ -111,7 +110,7 @@ def mostrar_puntajes(jugadores:list, ventana:pygame.Surface)->None:
     fuente = pygame.font.SysFont("Rockwell", 32)  # Fuente y tamaño
     
     # Mostramos los datos de los jugadores
-    cabecera = "Top 10 mejores puntajes sudoku"
+    cabecera = "Top 5 mejores puntajes de Sudoku"
     cabecera_renderizada = fuente.render(cabecera, True, AZUL)
     ventana.blit(cabecera_renderizada, (170, 50))
 
