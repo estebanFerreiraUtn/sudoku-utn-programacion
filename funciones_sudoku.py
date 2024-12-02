@@ -3,7 +3,7 @@ os.system("cls")
 
 def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
     '''
-    Función que crea un tablero (matriz) pasando por parámetro las dimensiones.
+    Función que crea una matriz pasando por parámetro las dimensiones y un valor inicial.
 
     Args:
         cantidad_filas (int): Cantidad de filas que va a tener el tablero sudoku (9x9 o 16x16)
@@ -13,11 +13,11 @@ def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any
     Returns:
         list: Tablero creado con las dimensiones especificadas 
     '''
-    tablero = []
+    matriz = []
     for _ in range(cantidad_filas):
         fila = [valor_inicial] * cantidad_columnas
-        tablero.append(fila)
-    return tablero
+        matriz.append(fila)
+    return matriz
 
 def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> bool:
     '''
@@ -47,11 +47,11 @@ def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> 
         if validacion == False:
             break
 
-        # Verifica si el numero se encuentra en el mismo subcuadro
-        subcuadro_fila = (fila // 3) * 3
-        subcuadro_col = (columna // 3) * 3
-        for i in range(subcuadro_fila, subcuadro_fila + 3):
-            for j in range(subcuadro_col, subcuadro_col + 3):
+        # Verifica si el numero se encuentra en la misma submatriz
+        submatriz_fila = (fila // 3) * 3
+        submatriz_columna = (columna // 3) * 3
+        for i in range(submatriz_fila, submatriz_fila + 3):
+            for j in range(submatriz_columna, submatriz_columna + 3):
                 if matriz[i][j] == numero:
                     validacion = False
                     break
@@ -60,12 +60,12 @@ def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> 
 
     return validacion
 
-def llenar_matriz(tablero_vacio: list, lista_numeros:list) -> bool:
+def llenar_matriz(matriz: list, lista_numeros:list) -> bool:
     '''
     llena matriz con numeros aleatorios respetando las reglas del Sudoku.
 
     Args:
-        tablero_vacio (list): Matriz creada para insertarle los numeros validos.
+        matriz (list): Matriz ya creada para insertarle los numeros validos.
         lista_numeros (list): Lista de numeros con la cual se va a llenar la matriz 
     
     Returns:
@@ -75,21 +75,21 @@ def llenar_matriz(tablero_vacio: list, lista_numeros:list) -> bool:
         >>> llenar_matriz(tablero)
     '''
     validacion = True  
-    for i in range(len(tablero_vacio)):
-        for j in range(len(tablero_vacio[i])):
-            if tablero_vacio[i][j] == 0:
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == 0:
                 lista_numeros_copia = lista_numeros[:]
                 random.shuffle(lista_numeros_copia)
                 
                 for numero in lista_numeros_copia:
-                    if validar_numero_en_matriz(tablero_vacio, i, j, numero) == True:
-                        tablero_vacio[i][j] = numero
+                    if validar_numero_en_matriz(matriz, i, j, numero) == True:
+                        matriz[i][j] = numero
                         
-                        if llenar_matriz(tablero_vacio, lista_numeros) == True:
+                        if llenar_matriz(matriz, lista_numeros) == True:
                             validacion = True
                             break
                         
-                        tablero_vacio[i][j] = 0
+                        matriz[i][j] = 0
                     else:
                         validacion = False
                 break
@@ -109,9 +109,6 @@ def ocultar_numeros_en_matriz(matriz:list, valor_de_ocultar:any, dificultad: str
     
     Returns:
         none: 
-
-    Example:
-        >>> ocultar_numeros_en_matriz(matriz, "", "intermedio")
     '''
     match dificultad:
         case "facil": dificultad = 0.20
