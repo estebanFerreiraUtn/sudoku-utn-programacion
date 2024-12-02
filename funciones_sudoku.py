@@ -3,7 +3,7 @@ os.system("cls")
 
 def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
     '''
-    Función que crea un tablero (matriz) pasando por parámetro las dimensiones.
+    Función que crea una matriz pasando por parámetro las dimensiones y un valor inicial.
 
     Args:
         cantidad_filas (int): Cantidad de filas que va a tener el tablero sudoku (9x9 o 16x16)
@@ -13,11 +13,11 @@ def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any
     Returns:
         list: Tablero creado con las dimensiones especificadas 
     '''
-    tablero = []
+    matriz = []
     for _ in range(cantidad_filas):
         fila = [valor_inicial] * cantidad_columnas
-        tablero.append(fila)
-    return tablero
+        matriz.append(fila)
+    return matriz
 
 def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> bool:
     '''
@@ -47,11 +47,11 @@ def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> 
         if validacion == False:
             break
 
-        # Verifica si el numero se encuentra en el mismo subcuadro
-        subcuadro_fila = (fila // 3) * 3
-        subcuadro_col = (columna // 3) * 3
-        for i in range(subcuadro_fila, subcuadro_fila + 3):
-            for j in range(subcuadro_col, subcuadro_col + 3):
+        # Verifica si el numero se encuentra en la misma submatriz
+        submatriz_fila = (fila // 3) * 3
+        submatriz_columna = (columna // 3) * 3
+        for i in range(submatriz_fila, submatriz_fila + 3):
+            for j in range(submatriz_columna, submatriz_columna + 3):
                 if matriz[i][j] == numero:
                     validacion = False
                     break
@@ -60,12 +60,13 @@ def validar_numero_en_matriz(matriz:list, fila:int, columna:int, numero:int) -> 
 
     return validacion
 
-def llenar_matriz(tablero_vacio: list, lista_numeros:list) -> bool:
+def llenar_matriz(matriz: list, lista_numeros:list) -> bool:
     '''
     llena matriz con numeros aleatorios respetando las reglas del Sudoku.
 
     Args:
-        tablero_vacio (list): matriz creada para insertarle los numeros validos. 
+        matriz (list): Matriz ya creada para insertarle los numeros validos.
+        lista_numeros (list): Lista de numeros con la cual se va a llenar la matriz 
     
     Returns:
         list: matriz creada con las dimensiones especificadas 
@@ -74,21 +75,21 @@ def llenar_matriz(tablero_vacio: list, lista_numeros:list) -> bool:
         >>> llenar_matriz(tablero)
     '''
     validacion = True  
-    for i in range(len(tablero_vacio)):
-        for j in range(len(tablero_vacio[i])):
-            if tablero_vacio[i][j] == 0:
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == 0:
                 lista_numeros_copia = lista_numeros[:]
                 random.shuffle(lista_numeros_copia)
                 
                 for numero in lista_numeros_copia:
-                    if validar_numero_en_matriz(tablero_vacio, i, j, numero) == True:
-                        tablero_vacio[i][j] = numero
+                    if validar_numero_en_matriz(matriz, i, j, numero) == True:
+                        matriz[i][j] = numero
                         
-                        if llenar_matriz(tablero_vacio, lista_numeros) == True:
+                        if llenar_matriz(matriz, lista_numeros) == True:
                             validacion = True
                             break
                         
-                        tablero_vacio[i][j] = 0
+                        matriz[i][j] = 0
                     else:
                         validacion = False
                 break
@@ -108,9 +109,6 @@ def ocultar_numeros_en_matriz(matriz:list, valor_de_ocultar:any, dificultad: str
     
     Returns:
         none: 
-
-    Example:
-        >>> ocultar_numeros_en_matriz(matriz, "", "intermedio")
     '''
     match dificultad:
         case "facil": dificultad = 0.20
@@ -130,18 +128,22 @@ def ocultar_numeros_en_matriz(matriz:list, valor_de_ocultar:any, dificultad: str
                 matriz[fila_aleatoria][columna_aleatoria] = valor_de_ocultar
                 break
 
-def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio_x_tablero:int, inicio_y_tablero:int, ventana:pygame.Surface, color_tablero:tuple, grosor_linea_gruesa:int, celda_seleccionada:tuple, celda_invalida:tuple) -> list:
+def dibujar_tablero(matriz:list, ancho_celda: int, alto_celda:int, inicio_x_tablero:int, inicio_y_tablero:int, ventana:pygame.Surface, color_tablero:tuple, grosor_linea_gruesa:int, celda_seleccionada:tuple) -> list:
     '''
     Dibuja un tablero sudoku clasico.
 
     Args:
-        matriz_sudoku (list): Matriz ya creada para ser dibujada de forma de tablero sudoku.
+        matriz (list): Matriz ya creada para ser dibujada de forma de tablero sudoku.
         ancho_celda (int): Valor que va a tener el ancho de las celdas del tablero.
         alto_celda (int): Valor que va a tener el alto de las celdas del tablero.
         inicio_x (int): Cordenada X donde va a empezar el tablero.
         inicio_y (int): Cordena Y donde va a empezar el tablero.
         ventana (pygame.Surface): Ventana en la cual se va a dibujar el tablero.
         color_tablero (tuple): Color que va a tener las lineas del tablero.
+        grosor_linea_gruesa (int): Grosor de las lineas que dividen las submatrices.
+        celda_seleccionada (tuple): Valor de x, y de la celda seleccionada.
+
+
     Returns:
         matriz_rectangulos (list): 
     '''
@@ -149,8 +151,8 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
     matriz_rectangulos = crear_matriz(9, 9, 0)
 
     ### DIBUJO DEL TABLERO ### 
-    for i in range(len(matriz_sudoku)):
-        for j in range(len(matriz_sudoku[i])):
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
             # Posiciones donde se van a dibujar las celdas
             x_celda = ancho_celda * j + inicio_x_tablero
             y_celda = alto_celda * i + inicio_y_tablero
@@ -182,9 +184,24 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
     
     return matriz_rectangulos
 
-def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, lista_celdas_invalidas:tuple, lista_celdas_validas:tuple):
+def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros_principales:tuple, ventana:pygame.Surface, grosor_numero:int, lista_celdas_invalidas:tuple, lista_celdas_validas:tuple) -> None:
     '''
-    Dibuja los numeros en las coordenas dichas
+    Dibuja los numeros en el tablero y las pinta de un color en especifico segun su valor.
+
+    Args:
+        matriz (list): Matriz del tablero el cual se va a dibujar los numeros que tiene en si misma en la ventana.
+        ancho_celda (int): Pasamos el ancho que tiene la celda para dibujar los numeros de forma centrada con una formula.
+        alto_celda (int): Pasamos el alto que tiene la celda para dibujar los numeros de forma centrada con una formula.
+        inicio_x (int): Donde se van a comenzar a dibujar los numeros en el tablero en el eje x.
+        inicio_y (int): Donde se van a comenzar a dibujar los numeros en el tablero en el eje y.
+        color_numeros_principales (tuple): color que van a tener los numeros principales del tablero.
+        ventana (pygame.Surfe): Ventana donde se van a dibujar los numeros.
+        grosor_numero (int): Grosor que van a tener los numeros al dibujarse.
+        lista_celdas_invalidas (list): Lista que va a contener todas las celdas con los numeros ingresados invalidos para pintarlos de rojo.
+        lista_celdas_validas (list): Lista que va a contener todas las celdas con los numeros ingresados validos para pintarlos de verde.
+
+    Returns:
+        None: No retorna nada, solo dibuja los numeros en la ventana
     '''
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
@@ -195,7 +212,7 @@ def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, 
             elif (i, j) in lista_celdas_invalidas:
                 color_actual = const.COLOR_CELDA_ERRONEA
             else:
-                color_actual = color_numeros
+                color_actual = color_numeros_principales
 
             numero = fuente.render(str(matriz[i][j]), True, color_actual)
 
@@ -209,43 +226,17 @@ def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, 
             # Pinta los numeros
             ventana.blit(numero, (x_numero, y_numero))
 
-def dibujar_opciones(ventana:pygame.Surface, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y:int, lista_numeros:list, color_numeros:tuple, color_tabla:tuple, grosor_lineas:int):
-    '''
-    Funcion que dibujas los rectangulos de opciones de numeros para agregar a la tabla del sudoku.
-    '''
-    ### DIBUJO DE LOS RECTANGULOS DE OPCIONES DE NUMERO ### 
-    for i in range(3):
-        for j in range(3):             
-            # Posiciones donde se van a dibujar las celdas
-            x_celda = ancho_celda * j + inicio_x
-            y_celda = alto_celda * i + inicio_y
-
-            # Dibujamos los rectangulos
-            celda = pygame.Rect(x_celda, y_celda, ancho_celda, alto_celda)
-            dibujo = pygame.draw.rect(ventana, color_tabla, celda, grosor_lineas)
-
-    ### DIBUJO DE NUMEROS ###
-    contador_opciones = 0
-    tamaño_numeros = 25
-    for i in range(3):
-        for j in range(3):
-            fuente = pygame.font.Font(None, tamaño_numeros)
-            numero = fuente.render(str(lista_numeros[contador_opciones]), True, color_numeros)
-
-            # Medidas del texto
-            ancho_texto, alto_texto = numero.get_size()
-
-            # Posiciones donde se van a ubicar los numeros en el tablero
-            x_numero = (ancho_celda * j) + (ancho_celda - ancho_texto) / 2 + inicio_x
-            y_numero = (alto_celda * i) + (alto_celda - alto_texto) / 2  + inicio_y
-
-            ventana.blit(numero, (x_numero, y_numero))
-
-            contador_opciones += 1
-
 def obtener_celda_seleccionada(matriz_rectangulos:list, cordenadas:tuple) -> tuple|None:
     '''
-    Obtiene la celda seleccionada adentro del tablero.
+    Obtiene la celda (x, y) seleccionada adentro del tablero.
+
+    Args:
+        matriz_rectangulos (list): Lista de una matriz que contiene los rectangulos (celdas) del tablero.
+        cordenadas (tuple): Cordenas donde se clickeo en la ventana para validar si coincide con algun rectangulo (celda) del tablero.
+    
+    Returns:
+        tuple: Si el click coincide con algun rectangulo (celda) del tablero entonces devuelve la celda seleccionada (x, y)
+        None: En caso contrario no devuelve nada 
     '''
     verificacion = None
     for i in range(len(matriz_rectangulos)):
@@ -259,8 +250,16 @@ def obtener_celda_seleccionada(matriz_rectangulos:list, cordenadas:tuple) -> tup
     
     return verificacion
 
-def mostrar_matriz(matriz:list):
+def mostrar_matriz(matriz:list) -> None:
     '''
+    Funcion que muesta una matriz por consola.
+
+    Args:
+        matriz (list): lista ya creada para mostrar por consola en forma de matriz.
+
+    Returns:
+        None: No retorna nada ya que solamente se encarga de mostrar por consola la lista en forma de matriz
+
     '''
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):

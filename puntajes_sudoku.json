@@ -1,7 +1,7 @@
 [
     {
         "nombre": "Esteban",
-        "puntaje": 0
+        "puntaje": 1000
     },
     {
         "nombre": "Romina",
@@ -12,7 +12,15 @@
         "puntaje": 1000
     },
     {
-        "nombre": "prueba mil",
+        "nombre": "osa",
+        "puntaje": 990
+    },
+    {
+        "nombre": "ositalamascapa",
+        "puntaje": 1740
+    },
+    {
+        "nombre": "Mathias",
         "puntaje": 1000
     }
 ]

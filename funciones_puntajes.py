@@ -1,4 +1,3 @@
-# FORMA DE IMPRIMIR LOS PUNTAJES EN PANTALLA:
 import pygame
 from constantes import *
 import json
@@ -53,27 +52,6 @@ def guardar_archivo_json(lista:list[dict], ruta:str)->None:
     with open(ruta, "w") as mi_archivo:
         json.dump(lista, mi_archivo, indent = 4)
 
-
-def parsear_json(nombre_archivo:str)->list[dict]:
-    """
-    Esta función se encarga de generar una lista de diccionarios a partir de un archivo json.
-    Recibe como parametros:
-        nombre_archivo (str): un string que representa la ruta en que se encuentra el archivo json.
-    Retorna:
-        lista_elementos (list[dict]): una lista que representa la lista de diccionarios.
-    """
-    try:
-        with open(nombre_archivo, "r") as archivo:
-            lista_elementos = json.load(archivo)
-    except FileNotFoundError:
-        print(f"Error: El archivo '{nombre_archivo}' no fue encontrado.")
-        lista_elementos = []  # Retornar una lista vacía en caso de error
-    except json.JSONDecodeError:
-        print(f"Error: El archivo '{nombre_archivo}' no contiene un JSON válido.")
-        lista_elementos = []  # Retornar una lista vacía en caso de error
-    
-    return lista_elementos
-
 def ordenar_lista_puntajes(lista_puntajes:list[dict])->None:
     """
     Esta función se encarga de ordenar de forma descendente los puntajes de una lista de diccionarios.
@@ -105,12 +83,13 @@ def mostrar_puntajes(jugadores:list, ventana:pygame.Surface)->None:
     """
     Esta función se encarga de mostrar la lista de jugadores con sus respectivos puntajes.
     Esta función recibe:
-
+        jugadores (list) a mostrar
+        ventana (pygame.Surface) en la que se mostrará la lista
     """
     fuente = pygame.font.SysFont("Rockwell", 32)  # Fuente y tamaño
     
     # Mostramos los datos de los jugadores
-    cabecera = "Top 10 mejores puntajes sudoku"
+    cabecera = "Top 5 mejores puntajes de Sudoku"
     cabecera_renderizada = fuente.render(cabecera, True, AZUL)
     ventana.blit(cabecera_renderizada, (170, 50))
 
