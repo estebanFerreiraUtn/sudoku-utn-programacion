@@ -52,27 +52,6 @@ def guardar_archivo_json(lista:list[dict], ruta:str)->None:
     with open(ruta, "w") as mi_archivo:
         json.dump(lista, mi_archivo, indent = 4)
 
-
-def parsear_json(nombre_archivo:str)->list[dict]:
-    """
-    Esta función se encarga de generar una lista de diccionarios a partir de un archivo json.
-    Recibe como parametros:
-        nombre_archivo (str): un string que representa la ruta en que se encuentra el archivo json.
-    Retorna:
-        lista_elementos (list[dict]): una lista que representa la lista de diccionarios.
-    """
-    try:
-        with open(nombre_archivo, "r") as archivo:
-            lista_elementos = json.load(archivo)
-    except FileNotFoundError:
-        print(f"Error: El archivo '{nombre_archivo}' no fue encontrado.")
-        lista_elementos = []  # Retornar una lista vacía en caso de error
-    except json.JSONDecodeError:
-        print(f"Error: El archivo '{nombre_archivo}' no contiene un JSON válido.")
-        lista_elementos = []  # Retornar una lista vacía en caso de error
-    
-    return lista_elementos
-
 def ordenar_lista_puntajes(lista_puntajes:list[dict])->None:
     """
     Esta función se encarga de ordenar de forma descendente los puntajes de una lista de diccionarios.

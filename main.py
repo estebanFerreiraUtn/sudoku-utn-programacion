@@ -185,11 +185,9 @@ def correr_juego(dimension_ventana:tuple)->None:
 
             # EVENTOS DE CLICKS ###
             if evento.type == pygame.MOUSEBUTTONDOWN and pantalla_actual ==  "jugar":
-
-                # Obtenemos las cordenadas x, y del evento click
-                cordenadas_click = pygame.mouse.get_pos()
+                
                 # Guardamos la celda seleccionada si se toco en el tablero con la funcion obtener_celda_seleccionada
-                nueva_celda = obtener_celda_seleccionada(matriz_rectangulos, cordenadas_click)
+                nueva_celda = obtener_celda_seleccionada(matriz_rectangulos, posicion_mouse)
 
                 # Valida si se selcciono una celda adentro del tablero. si se selecciona se pinta y si se toca afuera del tablero se despinta
                 if nueva_celda != None:
