@@ -70,7 +70,6 @@ def correr_juego(dimension_ventana:tuple)->None:
             boton_puntajes = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "PUNTAJES", const.AZUL_MENU, 400, 300, 15, 15, 3, const.AZUL_CLARO)
             boton_configuraciones = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "CONFIGURACIONES", const.AZUL_MENU, 400, 400, 15, 15, 3, const.AZUL_CLARO)
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 400, 500, 15, 15, 3, const.AZUL_CLARO) # Botón salir con la posición cambiada hacia abajo
-            boton_ganador = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "ganador", const.AZUL_MENU, 600, 500, 15, 15, 3, const.AZUL_CLARO) # Botón salir con la posición cambiada hacia abajo
             
             pantalla_menu = False
             pantalla_actual = "menu"
@@ -261,9 +260,6 @@ def correr_juego(dimension_ventana:tuple)->None:
                     
                     if boton_configuraciones.collidepoint(posicion_mouse):
                         pantalla_configuraciones = True
-                    
-                    if boton_ganador.collidepoint(posicion_mouse):
-                        pantalla_ganador = True
                 
                 ### PANTALLA JUGAR ###
                 if pantalla_actual == "jugar":
