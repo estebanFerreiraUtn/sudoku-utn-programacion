@@ -36,7 +36,6 @@ def correr_juego(dimension_ventana:tuple)->None:
     ingreso_teclas = ""
     
     celda_selec = None
-    celda_inv = None
 
     lista_celdas_invalidas = []
     lista_celdas_validas = []
@@ -168,7 +167,7 @@ def correr_juego(dimension_ventana:tuple)->None:
                 boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "SALIR", const.NEGRO, 700, 550, 15, 15, 3, const.CREMA)
                 
                 # Dibujamos el tablero y los numeros del sudoku
-                matriz_rectangulos = dibujar_tablero(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, pantalla, const.NEGRO, const.GROSOR_LINEA_GRUESA, celda_selec, celda_inv)
+                matriz_rectangulos = dibujar_tablero(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, pantalla, const.NEGRO, const.GROSOR_LINEA_GRUESA, celda_selec)
                 dibujar_numeros(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, const.NEGRO, pantalla, const.GROSOR_NUMEROS, lista_celdas_invalidas, lista_celdas_validas)
                 
                 # Hacemos la formula para que nos de el tiempo en minutos y segundos
@@ -214,11 +213,9 @@ def correr_juego(dimension_ventana:tuple)->None:
                         lista_celdas_validas.append(celda_selec)
                     else:
                         # Agregamos a una variable la celda invalida para luego usarla y poder pintar el numero de rojo
-                        # celda_inv = celda_selec
                         lista_celdas_invalidas.append(celda_selec)
                         matriz_copia[fila][columna] = numero
                         contador_errores += 1
-                        lista_celdas_invalidas.append(celda_inv)
 
                 if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE) and pantalla_actual == "jugar":
                     # Borra las celdas invalidas si se presiono la tecla de borrar o la de suprimir
@@ -247,12 +244,16 @@ def correr_juego(dimension_ventana:tuple)->None:
                             contador_errores = 0
                             puntaje_actual = 0
                             ingreso_teclas = ""
+                            
                             matriz = crear_matriz(9, 9, 0)
                             llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                             matriz_copia = copy.deepcopy(matriz)
                             ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
+
+                            # Limpia las lista invalidas y validas 
                             lista_celdas_invalidas.clear()
                             lista_celdas_validas.clear()
+
                             celda_selec = None
                             juego_ganado = False
                     
@@ -267,9 +268,11 @@ def correr_juego(dimension_ventana:tuple)->None:
                     if boton_reiniciar.collidepoint(posicion_mouse):
                         pantalla_jugar = True
                         tiempo_transcurrido = 0
-                        # Reincia el contador de errores y genera una nueva matriz para el tablero de juego
+                        # Reincia el contador de errores
                         contador_errores = 0
                         puntaje_actual = 0
+
+                        # genera una nueva matriz para el tablero de juego
                         matriz = crear_matriz(9, 9, 0)
                         llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                         matriz_copia = copy.deepcopy(matriz)
