@@ -86,6 +86,7 @@ def correr_juego(dimension_ventana:tuple)->None:
             menu_principal.dibujar_fondo(pantalla, const.FONDO_GANADOR, 0, 0)
             titulo_ganador = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "¡GANADOR!", const.NEGRO, 400, 80, 20, 20, 4)
             instrucciones = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "TECLEE SU NOMBRE Y PRESIONE ENTER:", const.NEGRO, 400, 250, 20, 20, 4)
+            boton_texto = menu_principal.dibujar_boton(pantalla, const.LETRA, 15, const.CAJA_VACIA, const.NEGRO, 400, 300, 5, 5, 1, const.CREMA)
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.NEGRO, 600, 550, 15, 15, 3, const.CREMA)
             boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.NEGRO, 200, 550, 15, 15, 3, const.CREMA)
             pantalla_ganador = False

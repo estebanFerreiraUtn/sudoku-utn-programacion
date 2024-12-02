@@ -105,7 +105,8 @@ def mostrar_puntajes(jugadores:list, ventana:pygame.Surface)->None:
     """
     Esta función se encarga de mostrar la lista de jugadores con sus respectivos puntajes.
     Esta función recibe:
-
+        jugadores (list) a mostrar
+        ventana (pygame.Surface) en la que se mostrará la lista
     """
     fuente = pygame.font.SysFont("Rockwell", 32)  # Fuente y tamaño
     
