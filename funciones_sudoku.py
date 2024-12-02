@@ -1,4 +1,4 @@
-import constantes as const, os, random, pygame, biblioteca, copy
+import constantes as const, os, random, pygame
 os.system("cls")
 
 def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
@@ -143,7 +143,7 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
         ventana (pygame.Surface): Ventana en la cual se va a dibujar el tablero.
         color_tablero (tuple): Color que va a tener las lineas del tablero.
     Returns:
-        none: 
+        matriz_rectangulos (list): 
     '''
     # Creamos una matriz para guardar los rectangulos del tablero
     matriz_rectangulos = crear_matriz(9, 9, 0)
@@ -184,7 +184,7 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
 
 def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, lista_celdas_invalidas:tuple, lista_celdas_validas:tuple):
     '''
-    Dibuja los numeros en las cordenas dichas
+    Dibuja los numeros en las coordenas dichas
     '''
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
@@ -266,4 +266,3 @@ def mostrar_matriz(matriz:list):
         for j in range(len(matriz[i])):
             print(matriz[i][j], end=" ")
         print()
-
