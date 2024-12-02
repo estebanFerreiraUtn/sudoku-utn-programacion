@@ -60,4 +60,4 @@ MUSICA_PUNTAJE = "sonidos/puntajes.mp3"
 ARCHIVO_JUGADORES = "puntajes_sudoku.json"
 
 ### CAJA DE TEXTO ###
-CAJA_VACIA = "               "
+CAJA_VACIA = " " * 15

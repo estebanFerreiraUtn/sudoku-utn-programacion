@@ -1,6 +1,8 @@
 # sudoku-utn-programacion
-Ferreira, Esteban
-Giménez, Matías
-Muñoz Federico
-Una modificación
-Segunda modificación
+
+Proyecto de juego Sudoku en Pygame para la materia Programación I - UTN - TUP
+
+## Alumnos:
+- Ferreira, Esteban
+- Giménez, Matías
+- Muñoz Federico
