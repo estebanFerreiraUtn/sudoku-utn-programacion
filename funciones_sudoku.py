@@ -1,4 +1,4 @@
-import constantes as const, os, random, pygame, biblioteca, copy
+import constantes as const, os, random, pygame
 os.system("cls")
 
 def crear_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any) -> list:
@@ -143,7 +143,7 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
         ventana (pygame.Surface): Ventana en la cual se va a dibujar el tablero.
         color_tablero (tuple): Color que va a tener las lineas del tablero.
     Returns:
-        none: 
+        matriz_rectangulos (list): 
     '''
     # Creamos una matriz para guardar los rectangulos del tablero
     matriz_rectangulos = crear_matriz(9, 9, 0)
@@ -182,15 +182,17 @@ def dibujar_tablero(matriz_sudoku:list, ancho_celda: int, alto_celda:int, inicio
     
     return matriz_rectangulos
 
-def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, celda_invalida:tuple):
+def dibujar_numeros(matriz:list, ancho_celda:int, alto_celda:int, inicio_x:int, inicio_y, color_numeros:tuple, ventana:pygame.Surface, grosor_numero:int, lista_celdas_invalidas:tuple, lista_celdas_validas:tuple):
     '''
-    Dibuja los numeros en las cordenas dichas
+    Dibuja los numeros en las coordenas dichas
     '''
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             fuente = pygame.font.Font(None, grosor_numero)
-            
-            if celda_invalida == (i, j):
+
+            if (i, j) in lista_celdas_validas:
+                color_actual = const.VERDE
+            elif (i, j) in lista_celdas_invalidas:
                 color_actual = const.COLOR_CELDA_ERRONEA
             else:
                 color_actual = color_numeros
@@ -264,88 +266,3 @@ def mostrar_matriz(matriz:list):
         for j in range(len(matriz[i])):
             print(matriz[i][j], end=" ")
         print()
-
-
-### Ejecucion de la ventana ###
-pygame.init()
-ventana_sudoku = pygame.display.set_mode(const.DIMENSION_VENTANA, pygame.RESIZABLE)
-pygame.display.set_caption(const.TITULO_JUEGO)
-fps = pygame.time.Clock()
-
-### Creamos la matriz para despues dibujarla ###
-matriz = crear_matriz(9, 9, 0)
-llenar_matriz(matriz, const.NUMEROS_SUDOKU)
-matriz_copia = copy.deepcopy(matriz)
-ocultar_numeros_en_matriz(matriz_copia, "", "intermedio")
-
-mostrar_matriz(matriz)
-print()
-mostrar_matriz(matriz_copia)
-
-# Dibujamos la tabla de opciones numericas
-# dibujar_opciones(ventana_sudoku, ancho_celda_opciones, alto_celda_opciones, inicio_x_opciones, inicio_y_opciones, lista_numeros, const.NEGRO, const.NEGRO, const.GROSOR_LINEAS_OPCIONES)
-
-celda_selec = None
-celda_inv = None
-corriendo = True
-contador_errores = 0
-while corriendo:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            corriendo = False
-
-        ## EVENTOS DE CLICK ###
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Obtenemos las cordenadas x,y del evento click
-            cordenadas_click = pygame.mouse.get_pos()
-            nueva_celda = obtener_celda_seleccionada(matriz_rectangulos, cordenadas_click)
-
-            if nueva_celda != None:
-                celda_selec = nueva_celda
-                celda_inv = None # Reinicia estado
-            
-        ## EVENTOS DE TECLA ###
-        elif event.type == pygame.KEYDOWN and celda_selec:
-            fila, columna = celda_selec
-            # Validamos si el valor ingresado es numerico y si esta vacia la celda
-            if (event.unicode.isdigit()) and (event.unicode != 0) and (matriz_copia[celda_selec[0]][celda_selec[1]] == ""):
-                numero = int(event.unicode)
-                # Validamos que el numero ingresado sea valido en la celda seleccionada
-                if numero == matriz[celda_selec[0]][celda_selec[1]]:
-                    # Ingresamos el numero en la tabla (matriz) del juego
-                    matriz_copia[fila][columna] = numero 
-                    celda_inv = None
-                else:
-                    celda_inv = celda_selec
-                    matriz_copia[fila][columna] = numero
-                    contador_errores += 1
-                    print(contador_errores)
-                    if contador_errores == 3:
-                        matriz = crear_matriz(9, 9, 0)
-                        llenar_matriz(matriz, const.NUMEROS_SUDOKU)
-                        matriz_copia = copy.deepcopy(matriz)
-                        ocultar_numeros_en_matriz(matriz_copia, "", "intermedio")
-                        matriz_copia[fila][columna] = ""
-                        contador_errores = 0
-                        
-            elif event.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
-                if celda_selec: 
-                    if celda_inv or matriz_copia[fila][columna] != matriz[fila][columna]:
-                        matriz_copia[fila][columna] = "" 
-                        celda_inv = None
-        
-    ventana_sudoku.fill(const.BLANCO)
-    # Dibujamos el tablero en la ventana
-    matriz_rectangulos = dibujar_tablero(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, ventana_sudoku, const.NEGRO, const.GROSOR_LINEA_GRUESA, celda_selec, celda_inv)
-    dibujar_numeros(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, const.NEGRO, ventana_sudoku, const.GROSOR_NUMEROS, celda_inv)
-
-    # Actualiza la ventana
-    pygame.display.flip()
-
-    # FPS
-    fps.tick(60)  
-
-pygame.quit()
-
-
-

@@ -1,52 +1,18 @@
 [
-   {
-      "id": 0,
-      "nombre": "Luquitas",
-      "puntaje": 350
-   },
-   {
-      "id": 1,
-      "nombre": "Pepe",
-      "puntaje": 0
-   },
-   {
-      "id": 2,
-      "nombre": "Juan",
-      "puntaje": 500
-   },
-   {
-      "id": 3,
-      "nombre": "Marce",
-      "puntaje": 150
-   },
-   {
-      "id": 4,
-      "nombre": "Valeria",
-      "puntaje": 200
-   },
-   {
-      "id": 5,
-      "nombre": "Carlos",
-      "puntaje": 700
-   },
-   {
-      "id": 6,
-      "nombre": "Matias",
-      "puntaje": 550
-   },
-   {
-      "id": 7,
-      "nombre": "Marcos",
-      "puntaje": 850
-   },
-   {
-      "id": 8,
-      "nombre": "Fede",
-      "puntaje": 675
-   },
-   {
-      "id": 9,
-      "nombre": "Tristan",
-      "puntaje": 0
-   }
+    {
+        "nombre": "Esteban",
+        "puntaje": 0
+    },
+    {
+        "nombre": "Romina",
+        "puntaje": 500
+    },
+    {
+        "nombre": "jugador",
+        "puntaje": 1000
+    },
+    {
+        "nombre": "prueba mil",
+        "puntaje": 1000
+    }
 ]

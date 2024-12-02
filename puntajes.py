@@ -3,6 +3,56 @@ import pygame
 from constantes import *
 import json
 
+# Funciones para asignarle al archivo json el puntaje correspondiente
+
+def cargar_archivo_json(ruta:str)-> list[dict]:
+    """
+    Esta función se encarga leer un archivo json y retornar su contenido.
+    Recibe:
+        ruta (str): representa a la dirección en la que se encuentra el archivo json a ser leido.
+    Retorna:
+        datos(list[dict]): son los datos que del archivo en forma de una lista de diccionarios.
+    """
+    with open(ruta, "r") as mi_archivo:
+        datos = json.load(mi_archivo)
+    
+    return datos
+
+def agregar_jugador_a_lista(nombre_jugador: str, puntaje: int, lista_jugadores: list[dict]) -> list[dict]:
+    """
+    Agrega un nuevo jugador o actualiza el puntaje máximo de un jugador existente.
+    Si el nombre ya existe y el nuevo puntaje es mayor, actualiza el puntaje.
+    """
+
+    jugador_existe = False
+
+    for jugador in lista_jugadores:
+        if jugador["nombre"] == nombre_jugador:
+            jugador_existe = True
+
+            # Actualizar puntaje solo si el nuevo es mayor
+            if puntaje > jugador["puntaje"]:
+                jugador["puntaje"] = puntaje
+            break
+
+    # Si no se encuentra el jugador, se agrega como nuevo
+    if jugador_existe == False:
+        lista_jugadores.append({"nombre": nombre_jugador, "puntaje": puntaje})
+    
+    return lista_jugadores
+
+
+def guardar_archivo_json(lista:list[dict], ruta:str)->None:
+    """
+    Esta función se encarga de escribirle una lista de diccionario a un archivo json. Si el archivo json no existe lo crea.
+    Recibe:
+        lista (list[dict]): es una lista de diccionarios que representa a la lista con los datos a guardarse en el archivo json.
+        ruta (str): representa a la dirección en la que se encuentra el archivo json al cual se le escribirá la lista.
+    No retorna nada.
+    """
+    with open(ruta, "w") as mi_archivo:
+        json.dump(lista, mi_archivo, indent = 4)
+
 
 def parsear_json(nombre_archivo:str)->list[dict]:
     """
@@ -24,22 +74,21 @@ def parsear_json(nombre_archivo:str)->list[dict]:
     
     return lista_elementos
 
-def ordenar_lista_puntajes(lista_puntajes:list[dict])->list:
+def ordenar_lista_puntajes(lista_puntajes:list[dict])->None:
     """
     Esta función se encarga de ordenar de forma descendente los puntajes de una lista de diccionarios.
     Recibe:
         lista_puntajes (list[dict]): es una lista de diccionarios que representa a los jugadores del sudoku con sus respectivos puntajes.
     Retorna:
     """
-    bandera = False
+    
     for i in range(len(lista_puntajes) - 1):
         for j in range(i + 1, len(lista_puntajes)):
             if lista_puntajes[i]["puntaje"] < lista_puntajes[j]["puntaje"]:
                 aux = lista_puntajes[i]
                 lista_puntajes[i] = lista_puntajes[j]
                 lista_puntajes[j] = aux
-                bandera = True
-    return bandera
+
 
 def obtener_top_cinco(lista_puntajes:list[dict])->list[dict]:
     """
@@ -51,46 +100,28 @@ def obtener_top_cinco(lista_puntajes:list[dict])->list[dict]:
     """
     return lista_puntajes[:5]
 
-
-lista_jugadores = parsear_json("puntajes_sudoku.json") # Obtengo los datos de los jugadores a partir del archivo json
-
-print(lista_jugadores)
-
-ordenar_lista_puntajes(lista_jugadores) # Ordeno la lista de jugadores descendentemente de acuerdo a su puntaje
-
-lista_jugadores_top_cinco = obtener_top_cinco(lista_jugadores) # Me quedo con los cinco jugadores con mejor puntaje
-
-
-
-# Función para dibujar el texto sin usar enumerate
-def mostrar_puntajes(jugadores:list, ventana:pygame.Surface):
+# Función para dibujar el texto
+def mostrar_puntajes(jugadores:list, ventana:pygame.Surface)->None:
     """
     Esta función se encarga de mostrar la lista de jugadores con sus respectivos puntajes.
     Esta función recibe:
 
     """
     fuente = pygame.font.SysFont("Rockwell", 32)  # Fuente y tamaño
-    # Dibujar el fondo
-    # ventana.blit(fondo, (0, 0))
     
-    # Inicializar el contador para las posiciones
-    posicion_y = 50  # Comienza en 50 píxeles en el eje Y
-
-    # Mostrar los datos de los jugadores
+    # Mostramos los datos de los jugadores
     cabecera = "Top 10 mejores puntajes sudoku"
     cabecera_renderizada = fuente.render(cabecera, True, AZUL)
     ventana.blit(cabecera_renderizada, (170, 50))
 
-    # Inicializar el contador para las posiciones
-    posicion_y = 90  # Comienza en 90 píxeles en el eje Y
+    # Donde va a empezar la posicion x, y
+    posicion_x = 50 
+    posicion_y = 90  
 
-    
     for i in range(len(jugadores)):
         texto = f"{i + 1} _ {jugadores[i]['nombre']}: {jugadores[i]['puntaje']}"
-        texto_renderizado = fuente.render(texto, True, AZUL)  # Color azul
-        ventana.blit(texto_renderizado, (250, posicion_y))  # Dibujar el texto en la posición (50, posicion_y)
+        texto_renderizado = fuente.render(texto, True, AZUL) 
+        ventana.blit(texto_renderizado, (250, posicion_y))  # Dibuja el texto en la posicion (50, posicion_y)
         
-        # Actualizar la posición en el eje Y para el siguiente jugador
-        posicion_y += 40  # Aumentar la posición Y en 40 píxeles
-
-
+        # Actualiza la posicion en el eje Y para el siguiente jugador
+        posicion_y += 40  # Aumenta la posicion en 40 píxeles

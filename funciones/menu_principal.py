@@ -1,4 +1,5 @@
 import pygame
+from funciones_sudoku import *
 
 def dibujar_boton(pantalla: pygame.Surface, tipografia: str|None, tamanio_letra: int, texto_boton: str, color_principal: tuple, eje_x: int, eje_y: int, incremento_x: int, incremento_y: int, grosor_borde: int, color_fondo: tuple|None = None)->None:
     """
@@ -70,13 +71,13 @@ def determinar_coeficiente_segun_dificultad(dificultad:str)->int:
         case "facil":
             coeficiente_segun_dificultad = 1
         case "intermedio":
-            coeficiente_segun_dificultad = 1.5
-        case "dificil":
             coeficiente_segun_dificultad = 2
+        case "dificil":
+            coeficiente_segun_dificultad = 3
     
     return coeficiente_segun_dificultad
 
-def calcular_puntaje(minutos_transcurridos:int, cantidad_errores:int,  dificultad_sudoku:str="facil", puntaje_base:int=1000, penalizacion_por_error:int=50, penalizacion_por_minuto:int=10)->int:
+def calcular_puntaje(minutos_transcurridos:int, cantidad_errores:int, dificultad_sudoku:str="facil", puntaje_base:int=1000, penalizacion_por_error:int=50, penalizacion_por_minuto:int=10)->int:
     """
     Esta función se encarga de calcular el puntaje de un jugador al terminar la partida del sudoku.
     Recibe:

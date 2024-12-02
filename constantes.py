@@ -8,6 +8,7 @@ TITULO_JUGAR = "Sudoku Clásico - Jugar"
 TITULO_PUNTAJE = "Sudoku Clásico - Puntajes"
 TITULO_MENU = "Sudoku Clásico - Menú"
 TITULO_CONFIGURACIONES = "Sudoku Clásico - Configuraciones" # Para el nuevo menu de configuraciones
+TITULO_GANADOR = "Sudoku Clásico - Ganador"
 
 ### COLORES ###
 BLANCO = (255, 255, 255)
@@ -19,15 +20,17 @@ AZUL_CLARO = (173, 216, 230)
 CREMA = (254, 245, 231)
 COLOR_CELDA_ERRONEA = (255, 0, 0) # Rojo  (RGBA)
 COLOR_CELDA_SELECCIONADA = (173, 216, 230, 128)   # Azul transparente (RGBA)
+VERDE = (80, 200, 120)
 
 
 ### IMAGENES ###
 FONDO_MENU_PRINCIPAL = "imagenes/menu_principal.png"
-FONDO_JUGAR = "imagenes/fondo_jugar.png"
+FONDO_GANADOR = "imagenes/fondo_ganador.png"
 FONDO_PUNTAJES = "imagenes/fondo_seccion_puntuaciones.jpg"
 FONDO_CONFIGURACIONES = "imagenes/fondo_configuraciones.jpeg" # Fondo para el nuevo menu configuraciones
 LETRA = "imagenes/fuente.ttf"
 CAPTION = "imagenes/sudoku-caption.webp"
+FONDO_SUDOKU = "imagenes/fondo-sudoku.jpg"
 
 ### TABLERO ###
 ANCHO_CELDA_TABLERO = 50
@@ -53,3 +56,8 @@ MUSICA_MENU_PRINCIPAL = "sonidos/menu_principal.mp3"
 MUSICA_JUGAR = "sonidos/juego.mp3"
 MUSICA_PUNTAJE = "sonidos/puntajes.mp3"
 
+### ARCHIVO ###
+ARCHIVO_JUGADORES = "puntajes_sudoku.json"
+
+### CAJA DE TEXTO ###
+CAJA_VACIA = "               "
