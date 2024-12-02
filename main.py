@@ -246,6 +246,7 @@ def correr_juego(dimension_ventana:tuple)->None:
                             # Reincia el contador de errores y genera una nueva matriz para el tablero de juego
                             contador_errores = 0
                             puntaje_actual = 0
+                            ingreso_teclas = ""
                             matriz = crear_matriz(9, 9, 0)
                             llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                             matriz_copia = copy.deepcopy(matriz)

@@ -14,5 +14,21 @@
     {
         "nombre": "prueba mil",
         "puntaje": 1000
+    },
+    {
+        "nombre": "osa",
+        "puntaje": 990
+    },
+    {
+        "nombre": "osita",
+        "puntaje": 2760
+    },
+    {
+        "nombre": "gime",
+        "puntaje": 990
+    },
+    {
+        "nombre": "ositalamascapa",
+        "puntaje": 1740
     }
 ]
