@@ -20,18 +20,21 @@ def correr_juego(dimension_ventana:tuple)->None:
     pygame.time.set_timer(evento_ticks_1, tiempo_milisegundos)
     tiempo_transcurrido = 0
     contador_errores = 0
+    puntaje_actual = 0
 
     juego_corriendo = True
+    juego_ganado = False
     pantalla_menu = True
     sonido_ejecutandose = True
     pantalla_jugar = False
     pantalla_puntajes = False
-    pantalla_configuraciones = False # Nuevo menu para elegir dificultad del juego
-    dificultad = "facil" # Inicializo la dificultad en fácil
+    pantalla_configuraciones = False
+    pantalla_ganador = False
 
+    dificultad = "facil"
     pantalla_actual = ""
+    ingreso_teclas = ""
     
-    # pygame.image.load(const.FONDO_SUDOKU)
     celda_selec = None
     celda_inv = None
 
@@ -43,9 +46,8 @@ def correr_juego(dimension_ventana:tuple)->None:
     matriz_copia = copy.deepcopy(matriz)
     ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
 
-    # mostrar_matriz(matriz)
-    # print()
-    # mostrar_matriz(matriz_copia)
+    mostrar_matriz(matriz) #BORRAR!!!
+    #mostrar_matriz(matriz_copia) #BORRAR!!!
     
     while juego_corriendo == True:
         # Obtenemos los eventos utilizados
@@ -53,9 +55,8 @@ def correr_juego(dimension_ventana:tuple)->None:
         lista_eventos = pygame.event.get()
         boton_mouse_presionado = pygame.mouse.get_pressed()
 
-
         if pantalla_menu == True:
-            # pantalla.fill(const.NEGRO)
+            pantalla.fill(const.GRIS_CLARO)
 
             # Musica del menu principal
             menu_principal.iniciar_musica(const.MUSICA_MENU_PRINCIPAL)
@@ -69,15 +70,27 @@ def correr_juego(dimension_ventana:tuple)->None:
             boton_puntajes = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "PUNTAJES", const.AZUL_MENU, 400, 300, 15, 15, 3, const.AZUL_CLARO)
             boton_configuraciones = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "CONFIGURACIONES", const.AZUL_MENU, 400, 400, 15, 15, 3, const.AZUL_CLARO)
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 400, 500, 15, 15, 3, const.AZUL_CLARO) # Botón salir con la posición cambiada hacia abajo
-            # boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 400, 400, 15, 15, 3, const.AZUL_CLARO) # Botón salir original
+            boton_ganador = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "ganador", const.AZUL_MENU, 600, 500, 15, 15, 3, const.AZUL_CLARO) # Botón salir con la posición cambiada hacia abajo
             
             pantalla_menu = False
             pantalla_actual = "menu"
         
         if pantalla_jugar == True:
+            pantalla.fill(const.GRIS_CLARO)
             menu_principal.iniciar_musica(const.MUSICA_JUGAR)
             pantalla_jugar = False
             pantalla_actual = "jugar"
+        
+        if pantalla_ganador == True:
+            pantalla.fill(const.GRIS_CLARO)
+            pygame.display.set_caption(const.TITULO_GANADOR)
+            menu_principal.dibujar_fondo(pantalla, const.FONDO_GANADOR, 0, 0)
+            titulo_ganador = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "¡GANADOR!", const.NEGRO, 400, 80, 20, 20, 4)
+            instrucciones = menu_principal.dibujar_boton(pantalla, const.LETRA, 20, "TECLEE SU NOMBRE Y PRESIONE ENTER:", const.NEGRO, 400, 250, 20, 20, 4)
+            boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.NEGRO, 600, 550, 15, 15, 3, const.CREMA)
+            boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.NEGRO, 200, 550, 15, 15, 3, const.CREMA)
+            pantalla_ganador = False
+            pantalla_actual = "ganador"
         
         if pantalla_puntajes == True:
             pantalla.fill(const.GRIS_CLARO)
@@ -87,13 +100,16 @@ def correr_juego(dimension_ventana:tuple)->None:
 
             boton_salir = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "SALIR", const.AZUL_MENU, 600, 550, 15, 15, 3, const.AZUL_CLARO)
             boton_volver = menu_principal.dibujar_boton(pantalla, const.LETRA, 30, "VOLVER", const.AZUL_MENU, 200, 550, 15, 15, 3, const.AZUL_CLARO)
-            mostrar_puntajes(lista_jugadores_top_cinco, pantalla)
+            lista_jugadores = cargar_archivo_json(const.ARCHIVO_JUGADORES)
+            ordenar_lista_puntajes(lista_jugadores)
+            lista_top_5 = obtener_top_cinco(lista_jugadores)
+            mostrar_puntajes(lista_top_5, pantalla)
 
             pantalla_puntajes = False
             pantalla_actual = "puntajes"
         
         if pantalla_configuraciones == True: # Nuevo menu configuraciones
-            # pantalla.fill(const.GRIS_CLARO)
+            pantalla.fill(const.GRIS_CLARO)
 
             # titulo de la ventana configuraciones
             pygame.display.set_caption(const.TITULO_CONFIGURACIONES)
@@ -115,12 +131,32 @@ def correr_juego(dimension_ventana:tuple)->None:
             pantalla_actual = "configuraciones"
 
         for evento in lista_eventos:
+            
+            if evento.type == pygame.KEYDOWN and pantalla_actual == "ganador":
+                if evento.key == pygame.K_BACKSPACE and (len(ingreso_teclas) > 0):
+                    #rectangulo_boton_texto = boton_texto.get
+                    ingreso_teclas = ingreso_teclas[0:-1]
+                elif evento.key == pygame.K_RETURN:  # Enter
+                    lista_jugadores = cargar_archivo_json(const.ARCHIVO_JUGADORES)
+                    lista_jugadores = agregar_jugador_a_lista(ingreso_teclas, puntaje_actual, lista_jugadores)
+                    guardar_archivo_json(lista_jugadores, const.ARCHIVO_JUGADORES)
+                    pantalla_puntajes = True
+                else:
+                    if len(ingreso_teclas) < 15:
+                        ingreso_teclas += evento.unicode
+                
+                boton_texto = menu_principal.dibujar_boton(pantalla, const.LETRA, 15, const.CAJA_VACIA, const.NEGRO, 400, 300, 5, 5, 1, const.CREMA)
+                boton_texto = menu_principal.dibujar_boton(pantalla, const.LETRA, 15, ingreso_teclas, const.NEGRO, 400, 300, 5, 5, 1, const.CREMA)
+
             if pantalla_actual == "jugar":
                 
                 # Validamos que este la ventana de jugar si solo va sumando el tiempo cuando se este en la ventana de jugar
                 if pantalla_actual == "jugar":
                     if evento.type == evento_ticks_1:
-                        tiempo_transcurrido += 1000  
+                        tiempo_transcurrido += 1000
+                    if matriz == matriz_copia:
+                        pantalla_ganador = True
+                        juego_ganado = True
                 
                 # Titulo de la ventana jugar
                 pygame.display.set_caption(const.TITULO_JUGAR)
@@ -137,8 +173,8 @@ def correr_juego(dimension_ventana:tuple)->None:
                 dibujar_numeros(matriz_copia, const.ANCHO_CELDA_TABLERO, const.ALTO_CELDA_TABLERO, const.INICIO_X_TABLERO, const.INICIO_Y_TABLERO, const.NEGRO, pantalla, const.GROSOR_NUMEROS, lista_celdas_invalidas, lista_celdas_validas)
                 
                 # Hacemos la formula para que nos de el tiempo en minutos y segundos
-                minutos = tiempo_transcurrido // 60000  
-                segundos = (tiempo_transcurrido // 1000) % 60  
+                minutos = tiempo_transcurrido // 60000
+                segundos = (tiempo_transcurrido // 1000) % 60
 
                 # Dibujamos el cronometro en la ventana
                 recuadro_cronometro = menu_principal.dibujar_boton(pantalla, None, 30, f"Tiempo: {minutos:02}:{segundos:02}", const.NEGRO, 705, 50, 15, 15, 3, const.CREMA)
@@ -147,6 +183,7 @@ def correr_juego(dimension_ventana:tuple)->None:
 
                 # Dibujamos el rectangulo de errores
                 recuadro_errores = menu_principal.dibujar_boton(pantalla, None, 30, f"Errores: {contador_errores}", const.NEGRO, 620, 90, 15, 15, 3, const.CREMA)
+            
 
             # EVENTOS DE CLICKS ###
             if evento.type == pygame.MOUSEBUTTONDOWN and pantalla_actual ==  "jugar":
@@ -161,16 +198,14 @@ def correr_juego(dimension_ventana:tuple)->None:
                     celda_selec = nueva_celda  
                 else:
                     celda_selec = None  
-                
+            
             ## EVENTOS DE TECLA ###
             if evento.type == pygame.KEYDOWN and celda_selec and pantalla_actual == "jugar":
                 # Obtenemos la fila y columna de la celda seleccionada (x, y)
                 fila, columna = celda_selec
-                print(celda_selec)
-                
+            
                 # Validamos si el valor ingresado es numerico y si esta vacia la celda
                 if (evento.unicode.isdigit()) and (evento.unicode != 0) and (matriz_copia[celda_selec[0]][celda_selec[1]] == ""):
-                    
                     numero = int(evento.unicode)
 
                     # Validamos que el numero ingresado sea valido en la celda seleccionada
@@ -178,26 +213,12 @@ def correr_juego(dimension_ventana:tuple)->None:
                         # Ingresamos el numero en el tablero (matriz copia) del juego
                         matriz_copia[fila][columna] = numero 
                         lista_celdas_validas.append(celda_selec)
-                        print("Celda correcta")
                     else:
                         # Agregamos a una variable la celda invalida para luego usarla y poder pintar el numero de rojo
                         # celda_inv = celda_selec
                         lista_celdas_invalidas.append(celda_selec)
                         matriz_copia[fila][columna] = numero
                         contador_errores += 1
-                        print(contador_errores)
-
-                        # Si se llego a los 3 errores se reinicia la partida
-                        if contador_errores == 3:
-                            matriz = crear_matriz(9, 9, 0)
-                            llenar_matriz(matriz, const.NUMEROS_SUDOKU)
-                            matriz_copia = copy.deepcopy(matriz)
-                            ocultar_numeros_en_matriz(matriz_copia, "", "intermedio")
-                            matriz_copia[fila][columna] = ""
-                            contador_errores = 0
-                            lista_celdas_invalidas.clear()
-                            celda_selec = None
-
                         lista_celdas_invalidas.append(celda_inv)
 
                 if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE) and pantalla_actual == "jugar":
@@ -206,30 +227,52 @@ def correr_juego(dimension_ventana:tuple)->None:
                         if (celda_selec in lista_celdas_invalidas) or (matriz_copia[fila][columna] != matriz[fila][columna]):
                             matriz_copia[fila][columna] = "" 
                             lista_celdas_invalidas.remove(celda_selec)
-
+            
             if evento.type == pygame.MOUSEBUTTONDOWN and boton_mouse_presionado[0] == True:
+                #BOTON SALIR EN TODAS LAS PANTALLAS
                 if boton_salir.collidepoint(posicion_mouse):
-                    pantalla_menu = False
+                    juego_corriendo = False
+                
+                #BOTON VOLVER NO PRESENTE EN MENÚ PRINCIPAL, SÍ EN LAS OTRAS
+                if pantalla_actual != "menu":
+                    if boton_volver.collidepoint(posicion_mouse):
+                            pantalla_menu = True
                 
                 ### PANTALLA MENU ###
                 if pantalla_actual == "menu":
                     if boton_jugar.collidepoint(posicion_mouse):
                         pantalla_jugar = True
+                        if juego_ganado == True:
+                            tiempo_transcurrido = 0
+                            # Reincia el contador de errores y genera una nueva matriz para el tablero de juego
+                            contador_errores = 0
+                            puntaje_actual = 0
+                            matriz = crear_matriz(9, 9, 0)
+                            llenar_matriz(matriz, const.NUMEROS_SUDOKU)
+                            matriz_copia = copy.deepcopy(matriz)
+                            ocultar_numeros_en_matriz(matriz_copia, "", dificultad)
+                            lista_celdas_invalidas.clear()
+                            lista_celdas_validas.clear()
+                            celda_selec = None
+                            juego_ganado = False
                     
                     if boton_puntajes.collidepoint(posicion_mouse):
                         pantalla_puntajes = True
                     
                     if boton_configuraciones.collidepoint(posicion_mouse):
                         pantalla_configuraciones = True
+                    
+                    if boton_ganador.collidepoint(posicion_mouse):
+                        pantalla_ganador = True
                 
                 ### PANTALLA JUGAR ###
                 if pantalla_actual == "jugar":
                     if boton_reiniciar.collidepoint(posicion_mouse):
                         pantalla_jugar = True
                         tiempo_transcurrido = 0
-
                         # Reincia el contador de errores y genera una nueva matriz para el tablero de juego
                         contador_errores = 0
+                        puntaje_actual = 0
                         matriz = crear_matriz(9, 9, 0)
                         llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                         matriz_copia = copy.deepcopy(matriz)
@@ -237,10 +280,6 @@ def correr_juego(dimension_ventana:tuple)->None:
                         lista_celdas_invalidas.clear()
                         lista_celdas_validas.clear()
                         celda_selec = None
-
-                    
-                    if boton_volver.collidepoint(posicion_mouse):
-                        pantalla_menu = True
                     
                     if boton_sonido.collidepoint(posicion_mouse):
                         if sonido_ejecutandose == True:
@@ -262,18 +301,18 @@ def correr_juego(dimension_ventana:tuple)->None:
                 
                     if boton_dificultad_facil.collidepoint(posicion_mouse):
                         dificultad = "facil"
-                        print(dificultad) # Solo para verificar
                     
                     if boton_dificultad_intermedio.collidepoint(posicion_mouse):
                         dificultad = "intermedio"
-                        print(dificultad) # Solo para verificar
                     
                     if boton_dificultad_dificil.collidepoint(posicion_mouse):
                         dificultad = "dificil"
-                        print(dificultad) # Solo para verificar
 
                     # Reinicia la matriz para un nuevo tablero cuando se modifique la dificultad
                     if boton_dificultad_facil.collidepoint(posicion_mouse) or boton_dificultad_intermedio.collidepoint(posicion_mouse) or boton_dificultad_dificil.collidepoint(posicion_mouse):
+                        tiempo_transcurrido = 0
+                        contador_errores = 0
+                        puntaje_actual = menu_principal.calcular_puntaje(minutos, contador_errores, dificultad)
                         matriz = crear_matriz(9, 9, 0)
                         llenar_matriz(matriz, const.NUMEROS_SUDOKU)
                         matriz_copia = copy.deepcopy(matriz)
